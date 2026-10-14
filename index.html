@@ -285,6 +285,7 @@ function render(){
  if(!rounds.length){wrap.innerHTML='<p class="hint">尚無明細。</p>'}else{
  wrap.innerHTML='<table><thead><tr><th>局</th><th>閒家</th><th>莊家</th><th>點數</th><th>結果</th><th></th></tr></thead><tbody>'+rounds.slice().reverse().map((r,ri)=>{let idx=rounds.length-ri-1;return `<tr><td>${idx+1}</td><td>${r.p.filter(Boolean).map(fmtCard).join(" ")}</td><td>${r.b.filter(Boolean).map(fmtCard).join(" ")}</td><td>${total(r.p)}:${total(r.b)}</td><td>${resultName(resultOf(r))}</td><td><button class="small danger" onclick="deleteRound(${idx})">刪除</button></td></tr>`}).join("")+'</tbody></table>';
  }
+ renderProbability();
  save();
 }
 function deleteRound(i){rounds.splice(i,1);render()}
