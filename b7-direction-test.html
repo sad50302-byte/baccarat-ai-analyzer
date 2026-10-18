@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10131b">
+<title>Baccarat AI Analyzer｜B7.1 Dream Gaming 快速辨識與方向判讀測試版</title>
+<style>
+:root{--bg:#10131b;--panel:#191e2a;--panel2:#222a39;--text:#f3f5fa;--muted:#a6b0c3;--gold:#e7c46a;--red:#f07b84;--blue:#80b8ff;--green:#85d6ad;--line:#343c4d}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#10131b,#151a25);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 14px calc(24px + env(safe-area-inset-bottom));}
+header{padding:22px 4px 16px}h1{font-size:24px;margin:0 0 5px;letter-spacing:.2px}.sub{color:var(--muted);font-size:13px;line-height:1.5}
+nav{display:flex;gap:8px;overflow:auto;margin:4px 0 14px}.tab{white-space:nowrap;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);padding:10px 14px;font-size:13px}.tab.active{background:var(--gold);color:#1b1b1b;border-color:var(--gold);font-weight:700}
+section.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 8px 24px #0002}
+h2{font-size:16px;margin:0 0 12px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:var(--panel2);padding:12px;border-radius:12px;min-width:0}.metric .label{font-size:11px;color:var(--muted)}.metric .value{font-size:21px;font-weight:750;margin-top:5px}.metric small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+button,select,input{font:inherit}button{border:0;border-radius:11px;padding:11px 13px;background:var(--gold);color:#17191e;font-weight:700;cursor:pointer}button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#4b252c;color:#ffdce0;border:1px solid #7b3b46}button.small{padding:7px 10px;font-size:12px}select,input[type=number]{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;max-width:100%}
+.field{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);flex:1;min-width:110px}.field select,.field input{width:100%}
+.hint{font-size:12px;color:var(--muted);line-height:1.55}.notice{padding:10px 12px;background:#29271e;border:1px solid #625533;border-radius:12px;color:#f2dfaa;font-size:12px;line-height:1.5;margin-top:10px}
+.hand{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}.playing-card{width:42px;height:58px;border-radius:8px;background:#f7f7f2;color:#161922;display:flex;flex-direction:column;justify-content:center;align-items:center;font-weight:800;font-size:17px;border:1px solid #d5d6d8}.playing-card.red{color:#c23849}.playing-card .suit{font-size:11px}
+.road{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}.roadcell{aspect-ratio:1;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;position:relative}.roadcell.B{border:2px solid var(--red);color:var(--red)}.roadcell.P{border:2px solid var(--blue);color:var(--blue)}.roadcell.T{background:#28634a;color:#fff}.roadcell span{position:absolute;right:-2px;top:-5px;font-size:9px;color:var(--gold)}
+.hidden{display:none}.result{font-size:13px;line-height:1.6;color:var(--muted)}.result strong{color:var(--text)}.bar{height:7px;border-radius:9px;background:var(--panel2);overflow:hidden;margin:6px 0 12px}.bar>div{height:100%;width:0;background:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 4px;border-bottom:1px solid var(--line);text-align:right}td:first-child,th:first-child{text-align:left}th{color:var(--muted);font-weight:500}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:8px 10px;line-height:1.6}
+label.check{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+ .point-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:12px 0}
+ .point-chip{background:var(--panel2);border-radius:10px;padding:9px 4px;text-align:center;min-width:0}
+ .point-chip .label{display:block;color:var(--muted);font-size:11px}
+ .point-chip .num{display:block;font-size:17px;font-weight:750;margin-top:2px}
+ @media(min-width:700px){body{max-width:760px;margin:auto}.grid{grid-template-columns:repeat(3,1fr)}.point-grid{grid-template-columns:repeat(10,minmax(0,1fr))}}
+
+.shot-preview{background:#0d111a;border:1px solid var(--line);border-radius:12px;padding:8px;overflow:hidden}
+.shot-preview canvas{display:block;max-width:100%;height:auto;border-radius:8px;margin:auto}
+.detected-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.detect-card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px;min-width:0}
+.detect-card .crop{height:93px;display:flex;align-items:center;justify-content:center;background:#0f1520;border-radius:8px;margin:7px 0;overflow:hidden}
+.detect-card .crop canvas{max-width:96%;max-height:89px;object-fit:contain;image-rendering:auto}
+.detect-card select{width:100%;font-size:14px;padding:9px 4px;white-space:normal}
+.detect-card .slot-label{font-size:12px;font-weight:700}
+.detect-card .scan-note{font-size:11px;color:var(--muted);min-height:30px;margin:6px 0 0;line-height:1.3}
+.detect-card .scan-note.warn{color:#f2dfaa}
+.shot-blue{color:var(--blue)}.shot-red{color:var(--red)}
+button:disabled{opacity:.48;cursor:not-allowed}
+ .slot-confirm{display:flex;gap:7px;align-items:center;font-size:12px;font-weight:650;color:#e7c46a;margin-top:10px;line-height:1.4}
+ .slot-confirm input{accent-color:#e7c46a;width:19px;height:19px;flex-shrink:0}
+ button:disabled{opacity:.46;cursor:not-allowed}
+
+/* B7 compact verification workflow: keep the original detailed B6 scanner available. */
+.b7-fast{background:#151d2a;border:1px solid var(--line);border-radius:14px;padding:12px;margin:12px 0}
+.b7-fast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.b7-fast-card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px;display:flex;gap:7px;align-items:center;min-width:0}
+.b7-fast-card.warn{border-color:#9b7b33}
+.b7-fast-card canvas{width:51px;height:70px;object-fit:contain;background:#fff;border-radius:5px;flex-shrink:0}
+.b7-fast-info{min-width:0;flex:1}
+.b7-fast-label{font-weight:700;font-size:11px;white-space:nowrap;margin-bottom:5px}
+.b7-fast-card select{width:100%;font-size:14px;min-width:0;padding:7px 3px}
+.b7-fast-hint{font-size:10px;color:var(--muted);margin-top:4px}
+.b7-fast-card.warn .b7-fast-hint{color:#f2dfaa}
+.b7-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.b7-actions button{width:100%;font-size:13px;line-height:1.4}
+#dreamPanel.b7-compact-mode #dgPreviewWrap,#dreamPanel.b7-compact-mode #dgCards,
+#dreamPanel.b7-compact-mode #dgCount,#dreamPanel.b7-compact-mode #dgUseWrap{display:none!important}
+@media(min-width:650px){.b7-fast-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.b7-actions{grid-template-columns:1fr 1fr}}
+
+/* B7.1: a transparent EV comparison and an explicit default to abstain. */
+.direction-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:8px 0 12px}
+.direction-tile{background:var(--panel2);padding:13px;border-radius:12px;min-width:0}
+.direction-tile .label{font-size:11px;color:var(--muted)}
+.direction-large{font-size:21px;font-weight:780;line-height:1.2;margin:8px 0;overflow-wrap:anywhere}
+.direction-verify{display:flex;gap:9px;align-items:flex-start;padding:12px;background:#232a38;border:1px solid var(--line);border-radius:12px;font-size:12px;line-height:1.55;margin:10px 0}
+.direction-verify input{flex-shrink:0;accent-color:var(--gold);width:18px;height:18px;margin-top:2px}
+@media(max-width:360px){.direction-two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="row between"><div><h1>♠ Baccarat AI Analyzer</h1><div class="sub">牌靴追蹤・動態機率・EV 與數學分析・B7.1 Dream<br>iPhone 優先的本機研究版</div></div><button class="small secondary" id="exportBtn">匯出資料</button></div>
+</header>
+<nav>
+  <button class="tab active" data-tab="analyze">即時分析</button>
+  <button class="tab" data-tab="entry">截圖辨識／輸入牌面</button>
+  <button class="tab" data-tab="history">路單與紀錄</button>
+  <button class="tab" data-tab="settings">設定</button>
+</nav>
+
+<div id="analyze" class="pane">
+  <section class="card">
+    <div class="row between"><h2>目前牌靴</h2><span class="hint" id="deckLabel">8 副牌</span></div>
+    <div class="grid">
+      <div class="metric"><div class="label">已記錄牌數</div><div class="value" id="seenCount">0</div><small>張</small></div>
+      <div class="metric"><div class="label">剩餘牌數</div><div class="value" id="leftCount">416</div><small>張（估算）</small></div>
+      <div class="metric"><div class="label">已記錄局數</div><div class="value" id="roundCount">0</div><small>局</small></div>
+    </div>
+    <p class="hint" id="shoeBadge">初次開啟會複製 B7 目前的牌靴資料，之後獨立儲存，不會修改原本 B7。</p>
+    <div class="notice">動態引擎已啟用：每新增、刪除、撤銷一局或切換牌靴，都會立即依已發出的牌重新計算。請只記錄同一牌靴的實際牌面。</div>
+  </section>
+  <section class="card">
+    <div class="row between"><h2>下一局動態機率</h2><span class="hint" id="calcMethod">精確枚舉</span></div>
+    <div class="grid">
+      <div class="metric"><div class="label">莊勝</div><div class="value" id="probB" style="color:var(--red)">—</div><small id="deltaB">計算中</small></div>
+      <div class="metric"><div class="label">閒勝</div><div class="value" id="probP" style="color:var(--blue)">—</div><small id="deltaP">計算中</small></div>
+      <div class="metric"><div class="label">和局</div><div class="value" id="probT" style="color:var(--green)">—</div><small id="deltaT">計算中</small></div>
+    </div>
+    <p class="hint" id="calcStatus" aria-live="polite">依剩餘牌組計算中……</p>
+    <p class="hint">依已記錄的實際牌面扣除牌數，使用標準百家樂補牌規則與「不放回抽牌」精確枚舉。莊、閒、和的三個百分比合計約 100%，均包含和局，不是扣除和局後的比率。與初始牌靴的變化以「百分點」呈現。</p>
+    <div class="notice">這是條件機率，不是 AI 預測或必勝訊號。只有完整、正確地記下同一牌靴已發出的牌，數字才符合假設；未知燒牌、漏記牌、換靴都會造成偏差。路單走勢無法可靠預測下一局。</div>
+  </section>
+  <section class="card" id="directionPanel" aria-label="下一局方向判讀">
+    <div class="row between"><h2>下一局方向判讀</h2><span class="hint">依真實賠率與牌靴條件機率</span></div>
+    <div class="direction-two">
+      <div class="direction-tile"><div class="label">相對較佳的投注選項</div><div class="direction-large" id="directionRelative">計算中</div><div id="directionRelativeEv" class="hint">根據每單位預期淨報酬（EV）比較</div></div>
+      <div class="direction-tile"><div class="label">是否具數學優勢</div><div class="direction-large" id="directionAction">計算中</div><div class="hint" id="directionActionWhy">若 EV 全部為負，明確顯示觀望</div></div>
+    </div>
+    <p class="hint" id="directionExplain" aria-live="polite">正在根據剩餘牌組計算……</p>
+    <label class="direction-verify"><input id="directionVerified" type="checkbox">我確認：這個牌靴從開始到目前沒有漏記任何已發牌、未換靴，且採用標準補牌規則</label>
+    <p class="hint">勾選只代表你自行確認記錄完整，不代表程式驗證過現場牌靴。即使出現正 EV，仍可能因燒牌、未知發牌、辨識錯誤或平台規則與模型不同而失準；此區不是必勝預測或下注保證。</p>
+  </section>
+  <section class="card" id="evPanel">
+    <h2>主注數學期望值（EV）與 Kelly</h2>
+    <p class="hint">參考 Baccarator 公開介紹的分析概念，使用本程式<strong>自行計算</strong>的莊／閒／和機率，套用所選賠率獨立計算 EV，並支援免佣莊6點半賠。這些是數學研究數據，不是下注或資金配置建議。</p>
+    <div class="row" style="margin:10px 0 12px">
+      <label class="field">莊贏佣金（傳統規則）
+        <select id="commissionSelect"><option value="0.05" selected>5%（莊贏淨賺 0.95）</option><option value="0.5six">免佣：莊贏6點半賠</option></select>
+      </label>
+      <label class="field">和局淨賠率
+        <select id="tiePaySelect"><option value="8" selected>8：1</option><option value="9">9：1</option></select>
+      </label>
+    </div>
+    <div class="grid">
+      <div class="metric"><div class="label">莊注 EV</div><div class="value" id="evB">—</div><small id="kellyB">Kelly：—</small></div>
+      <div class="metric"><div class="label">閒注 EV</div><div class="value" id="evP">—</div><small id="kellyP">Kelly：—</small></div>
+      <div class="metric"><div class="label">和注 EV</div><div class="value" id="evT">—</div><small id="kellyT">Kelly：—</small></div>
+    </div>
+    <p class="hint" id="evStatus" aria-live="polite"></p>
+    <div class="notice">EV 是每 1 單位投注的平均淨報酬比例：例如 −1.06% 表示模型平均每 100 單位損失 1.06 單位，而非下一局會損失多少。莊／閒投注遇和局按「退回本金」計算。Kelly 僅顯示數學公式解（負值以 0% 表示），並非實際下注建議。實際規則差異、未觀測燒牌或換靴可能使結果不適用。</div>
+  </section>
+  <section class="card">
+    <h2>剩餘牌數（依百家樂點數）</h2>
+    <div class="point-grid" id="pointCounts"></div>
+    <p class="hint">0 點包括 10、J、Q、K；其他點數按 A＝1、2～9 計算。記牌仍保留花色與牌面，以便檢查輸入是否超量。</p>
+  </section>
+  <section class="card">
+    <div class="row between"><h2>最近路單</h2><button class="small secondary" id="goHistory">查看全部</button></div>
+    <div id="miniRoad" class="road"></div>
+    <p class="hint" id="roadEmpty">尚無紀錄。可先到「輸入牌面」新增一局。</p>
+  </section>
+  <section class="card">
+    <h2>目前牌面（最近一局）</h2>
+    <div class="row"><div style="flex:1"><div class="hint">閒家</div><div class="hand" id="lastP"></div></div><div style="flex:1"><div class="hint">莊家</div><div class="hand" id="lastB"></div></div></div>
+    <div class="result" id="lastResult">尚未輸入牌局。</div>
+  </section>
+</div>
+
+<div id="entry" class="pane hidden">
+  
+<section class="card" id="dreamPanel">
+  <div class="row between"><h2>B7.1｜Dream Gaming 快速辨識</h2><span class="hint">實驗版 · 手機本機處理</span></div>
+  <p class="hint">針對 Dream Gaming 結算畫面，先辨識後集中顯示所有牌；你可在快速核對區直接修正。確認時才學習，<strong>不會自動加入牌局或扣牌</strong>。如果有看不清的牌，請展開原圖或使用 OCR。</p>
+  <input id="dgImageInput" type="file" accept="image/png,image/jpeg,image/webp,image/*" style="width:100%;color:var(--muted)" aria-label="上傳Dream Gaming截圖">
+  <p class="hint" id="dgStatus" role="status">尚未選擇截圖。</p>
+  <div class="row" style="margin:10px 0;gap:10px"><button id="dgOcr" type="button" class="secondary small" disabled>OCR 補充辨識（需網路）</button><button class="small secondary" id="dgReset" type="button">清除截圖</button></div>
+  <div id="b7QuickPanel" class="b7-fast hidden">
+    <div class="row between" style="margin-bottom:8px"><h3 style="margin:0;font-size:15px">快速核對牌面</h3><button id="b7DetailToggle" class="small secondary" type="button">展開原圖／逐張確認</button></div>
+    <p class="hint">依圖片逐張檢查，錯牌直接用選單修正。下方一次確認所有已看清的牌；此功能不會直接加入牌局。</p>
+    <div id="b7FastCards" class="b7-fast-grid"></div>
+    <p id="b7FastStatus" class="hint" aria-live="polite"></p>
+    <div class="b7-actions">
+      <button id="b7FastUse" type="button" disabled>核對完成，帶入表單</button>
+      <button id="b7FastLearn" type="button" class="secondary" disabled>只儲存辨識樣本（不加入牌局）</button>
+    </div>
+    <p class="hint" style="margin-bottom:0">辨識結果只是候選值。只在親眼看清全部牌號與花色時確認；帶入後仍須手動按「加入牌局」，且僅限同一副牌靴。</p>
+  </div>
+  <div class="shot-preview hidden" id="dgPreviewWrap"><canvas id="dgPreview"></canvas></div>
+  <div id="dgCards" class="detected-cards"></div>
+  <div class="row" style="margin-top:12px"><span id="dgSampleInfo" class="hint" style="flex:1"></span><button id="dgClearSamples" class="small secondary" type="button">清除 B7 累積樣本</button></div>
+  <p id="dgCount" class="hint"></p>
+  <div id="dgUseWrap" class="row" style="margin:10px 0"><button id="dgUse" disabled>全部核對後帶入表單</button></div>
+  <div class="notice">只支援<strong>已發牌結束、牌面清楚</strong>的截圖。若未偵測到牌、出現錯位或尚在發牌動畫，請重新截圖。這仍非涵蓋 52 種牌的通用模型；缺少樣本、截圖裁切偏移、字型變更可能讓辨識失敗。圖片不會自動上傳任何伺服器。</div>
+  <div class="row" style="margin-top:10px"><button id="dgMinus" class="small secondary" type="button">牌區上移</button><button id="dgPlus" class="small secondary" type="button">牌區下移</button><span class="hint" id="dgShiftText">偵測校正：0 px</span></div>
+</section>
+<section class="card" id="manualEntryCard">
+    <h2>手動輸入／確認牌面</h2>
+    <p class="hint">請輸入同一牌靴實際發出的每張牌。10、J、Q、K 都是 0 點牌，但仍要分別記錄牌面，才能追蹤剩餘牌組。程式也會檢查標準百家樂補牌規則。</p>
+    <div class="row">
+      <label class="field">閒家第一張<select id="p1"></select></label>
+      <label class="field">閒家第二張<select id="p2"></select></label>
+      <label class="field">閒家第三張（可略）<select id="p3"></select></label>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <label class="field">莊家第一張<select id="b1"></select></label>
+      <label class="field">莊家第二張<select id="b2"></select></label>
+      <label class="field">莊家第三張（可略）<select id="b3"></select></label>
+    </div>
+    <div class="row" style="margin-top:14px"><button id="addRound">加入牌局</button><button class="secondary" id="clearForm">清空選擇</button></div>
+    <p class="hint" id="formHint">第三張牌依實際牌局填寫；若沒有補牌請選「無」。系統會依輸入牌面計算雙方點數與結果。</p>
+  </section>
+  <section class="card" id="shotCard" style="display:none">
+    <div class="row between"><h2>舊版辨識（停用）</h2><span class="hint">iPhone Safari 適用</span></div>
+    <p class="hint">選擇真人荷官「發牌結束後」的完整截圖。程式先在手機本機尋找藍色閒家、紅色莊家區域，用少數示範截圖與已人工核對樣本做圖樣／角落候選比對；陌生牌型可按「嘗試 OCR」辨識牌號（首次需下載元件），花色仍可能需要手動選擇。<strong>所有候選答案都要逐張核對並勾選確認。</strong></p>
+    <input type="file" id="imageInput" accept="image/*" style="width:100%;color:var(--muted)" aria-label="選擇直播截圖">
+    <p id="shotStatus" class="hint" role="status" aria-live="polite">尚未選擇截圖。</p>
+    <div class="shot-preview hidden" id="shotPreviewBox"><canvas id="shotCanvas" aria-label="截圖與偵測到的牌面位置"></canvas></div>
+    <div id="scanActions" class="row hidden" style="margin:12px 0">
+      <button id="autoOcrBtn" type="button">嘗試 OCR 讀牌</button><button type="button" class="secondary small" id="clearLearned">清除本機圖樣學習</button><div id="learnedCount" class="hint" style="width:100%;margin:8px 0 0"></div>
+      <button id="resetScanBtn" type="button" class="secondary">重新選圖</button>
+    </div>
+    <div id="detectedCards" class="detected-cards"></div>
+    <div id="shotConfirm" class="hidden">
+      <div class="notice">請核對所有牌的數字與花色，特別是橫向牌，並逐張勾選「已核對」。<strong>畫面上的勝負／點數不是逐張牌的辨識依據。</strong> 如有一張錯誤，先用下方選單更正。</div>
+      <p class="hint" id="verifyCount">待確認：0 張</p>
+      <div class="row" style="margin-top:12px"><button id="useDetected" type="button" disabled>全部核對後帶入表單</button></div>
+      <p class="hint">帶入後仍需確認，並在下方按「加入牌局」才會扣除牌數。程式不會自行下注。</p>
+    </div>
+    <div class="notice"><strong>先確認截圖已完成發牌：</strong>你提供的第一張示範圖中，莊家 6 點面對閒家補 7 卻未見補牌，與標準規則不符；可能尚在動畫中或採用不同玩法。這類畫面會提示異常，不會直接加入紀錄。只有確認該桌使用標準補牌規則後，才可採用本程式的標準機率模型。</div>
+    <p class="hint">限制：圖樣比對只學習到少數示範圖樣與你人工核對後的牌型，不是通用的 52 張牌 AI 模型。較寬鬆的比對可能提出錯誤候選；新牌型、畫面縮放、反光或截圖動畫都可能失敗。圖樣比對與 OCR 的結果都是候選值，需逐張人工核對。OCR 首次會下載公用元件，截圖本身在手機內處理，不會自動傳送到賭場或本服務。</p>
+  </section>
+</div>
+
+<div id="history" class="pane hidden">
+  <section class="card">
+    <div class="row between"><h2>路單（目前牌靴）</h2><button class="small danger" id="clearHistory">清除目前紀錄</button></div>
+    <div class="road" id="fullRoad"></div><p class="hint" id="fullRoadEmpty">目前沒有牌局紀錄。</p>
+    <div class="grid" style="margin-top:12px">
+      <div class="metric"><div class="label">莊勝</div><div class="value" id="bWins">0</div></div>
+      <div class="metric"><div class="label">閒勝</div><div class="value" id="pWins">0</div></div>
+      <div class="metric"><div class="label">和局</div><div class="value" id="ties">0</div></div>
+    </div>
+    <p class="hint">歷史比例僅為描述性統計，不能直接推論下一局。若記錄牌面有錯，請刪除錯誤局或重新輸入。</p>
+  </section>
+  <section class="card">
+    <h2>牌局明細</h2><div id="roundTable"></div>
+  </section>
+</div>
+
+<div id="settings" class="pane hidden">
+  <section class="card">
+    <h2>牌靴設定</h2>
+    <div class="row">
+      <label class="field">牌副數<select id="deckSelect"><option value="6">6 副牌</option><option value="8" selected>8 副牌</option></select></label>
+      <label class="field">牌靴操作<select id="shoeAction"><option value="keep">保留紀錄</option><option value="new">開始新牌靴（舊紀錄另存封存）</option></select></label>
+    </div>
+    <div class="row" style="margin-top:12px"><button id="applySettings">套用設定</button><button id="undoLast" class="secondary">撤銷最後一局</button></div>
+    <p class="hint">B7 會將有牌局的舊牌靴封存，不會把不同牌靴混在同一份剩餘牌數裡。B5、B6 的牌靴資料都不受影響。</p>
+  </section>
+  <section class="card"><h2>已封存的牌靴</h2><div id="shoeArchives" class="hint">尚未封存任何牌靴。</div></section>
+  <section class="card">
+    <h2>資料與限制</h2>
+    <p class="hint">B7 使用獨立的牌靴儲存空間，B5、B6 的原紀錄都會保留；B7 可唯讀沿用同網站中 B6 人工核對的辨識樣本。清除 Safari 網站資料可能會移除紀錄，請定期匯出備份。此原型沒有連接任何賭場帳號，也不會自動讀取其他 App 的直播畫面。</p>
+    <p class="hint">本 B7.1 測試版保留主注 EV 與 Kelly 公式數值，保留局部牌面定位、示範圖樣比對、可選 OCR、逐張人工確認及依剩餘牌組計算。模型仍依標準百家樂（Punto Banco）補牌規則；若遊戲採用不同發牌規則、連續洗牌機，或有漏記牌，機率可能不適用。</p>
+  </section>
+</div>
+<footer>僅供機率研究與軟體測試。任何算牌或統計都無法保證獲利；請遵守所在地法律與平台規則。</footer>
+<script>
+const ranks = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+const suits = ["♠","♥","♦","♣"];
+const cardOptions = ['<option value="">無</option>'].concat(suits.flatMap(s=>ranks.map(r=>`<option value="${r}${s}">${r}${s}</option>`))).join("");
+let decks = 8;
+let rounds = [];
+const STORE = "baccarat_ai_analyzer_b71_direction_test";
+const PRIOR_STORE = "baccarat_ai_analyzer_b7_dream_test";
+let archives=[];
+let shoeId=String(Date.now());
+let shoeStartedAt=new Date().toISOString();
+function archiveCurrentShoe(){
+  if(rounds.length){archives.push({id:shoeId,startedAt:shoeStartedAt,closedAt:new Date().toISOString(),decks,rounds:JSON.parse(JSON.stringify(rounds))});}
+  shoeId=String(Date.now())+'-'+Math.floor(Math.random()*100000);
+  shoeStartedAt=new Date().toISOString();rounds=[];
+}
+function renderArchives(){
+ const root=document.getElementById('shoeArchives');
+ if(!archives.length){root.textContent='尚未封存任何有牌局紀錄的牌靴。';return;}
+ root.replaceChildren();
+ archives.slice().reverse().forEach((a,i)=>{
+   const p=document.createElement('p');p.style.padding='10px';p.style.border='1px solid var(--line)';p.style.borderRadius='10px';
+   const date=document.createElement('span');date.textContent=`${archives.length-i}. ${a.decks||8} 副牌・${(a.rounds||[]).length} 局・${(a.rounds||[]).flatMap(cardsOf).length} 張・封存 ${new Date(a.closedAt).toLocaleString('zh-TW')}`;
+   const btn=document.createElement('button');btn.className='small secondary';btn.style.marginLeft='8px';btn.textContent='匯出此牌靴';
+   btn.onclick=()=>downloadRecords({version:'B7',type:'archived-shoe',shoe:a},'b7-shoe-'+String(a.id).replace(/[^a-z0-9-]/ig,'')+'.json');
+   p.append(date,btn);root.append(p);
+ });
+}
+function downloadRecords(data,name){
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+function load(){try{const raw=localStorage.getItem(STORE)??localStorage.getItem(PRIOR_STORE);const d=JSON.parse(raw||"{}");decks=[6,8].includes(d.decks)?d.decks:8;rounds=Array.isArray(d.rounds)?d.rounds:[];archives=Array.isArray(d.archives)?d.archives:[];shoeId=d.shoeId||shoeId;shoeStartedAt=d.shoeStartedAt||shoeStartedAt;}catch(e){rounds=[];decks=8;archives=[]}}
+function save(){localStorage.setItem(STORE,JSON.stringify({decks,rounds,archives,shoeId,shoeStartedAt}))}
+function rankOf(card){return card?card.slice(0,-1):""}
+function suitOf(card){return card?card.slice(-1):""}
+function point(card){let r=rankOf(card);if(r==="A")return 1;if(["10","J","Q","K"].includes(r))return 0;return Number(r)||0}
+function total(cards){return cards.reduce((s,c)=>s+point(c),0)%10}
+function cardsOf(r){return [...r.p,...r.b].filter(Boolean)}
+function resultOf(r){let p=total(r.p),b=total(r.b);return p>b?"P":b>p?"B":"T"}
+function resultName(x){return x==="P"?"閒勝":x==="B"?"莊勝":"和局"}
+function fmtCard(c){if(!c)return "—";return `${rankOf(c)}${suitOf(c)}`}
+function cardHtml(c){if(!c)return "";let red=["♥","♦"].includes(suitOf(c));return `<div class="playing-card ${red?"red":""}"><span>${rankOf(c)}</span><span class="suit">${suitOf(c)}</span></div>`}
+function allCards(){return rounds.flatMap(cardsOf)}
+function counts(){let count={};ranks.forEach(r=>count[r]=0);allCards().forEach(c=>{if(c)count[rankOf(c)]=(count[rankOf(c)]||0)+1});return count}
+// 精確計算：將 52 種牌面合併成百家樂的 10 種點數。
+// 因為標準莊／閒勝負只由點數與補牌規則決定，此合併不損失機率資訊。
+// 每一步都按剩餘張數不放回抽取；沒有使用路單預測或隨機模擬。
+const baselineCache = {};
+function remainingPoints(seenCards){
+  const left = [16*decks, ...Array(9).fill(4*decks)];
+  for(const c of seenCards){
+    const p=point(c);
+    if(p<0 || p>9 || --left[p]<0) return null;
+  }
+  return left;
+}
+function bankerNeedsThird(bankerTotal, playerThird){
+  if(playerThird===null) return bankerTotal<=5;
+  if(bankerTotal<=2) return true;
+  if(bankerTotal===3) return playerThird!==8;
+  if(bankerTotal===4) return playerThird>=2&&playerThird<=7;
+  if(bankerTotal===5) return playerThird>=4&&playerThird<=7;
+  if(bankerTotal===6) return playerThird===6||playerThird===7;
+  return false;
+}
+function exactProbabilities(initial){
+  if(!initial) return null;
+  const c=initial.slice();
+  const N=c.reduce((s,v)=>s+v,0);
+  // 任何一局最多可能要 6 張牌；低於 6 張時不再計算完整一局。
+  if(N<6) return null;
+  const result=[0,0,0,0]; // 莊、閒、和、莊贏且最後6點
+  function finish(player,banker,weight){
+    result[banker>player?0:player>banker?1:2]+=weight;
+    if(banker>player && banker===6)result[3]+=weight;
+  }
+  function finishBanker(player,banker,weight,remaining,draw){
+    if(!draw){finish(player,banker,weight);return;}
+    for(let k=0;k<10;k++){
+      const available=c[k];
+      if(!available)continue;
+      const probability=weight*available/remaining;
+      // 最後一張僅影響總點數，不需再展開後續發牌。
+      finish(player,(banker+k)%10,probability);
+    }
+  }
+  for(let p1=0;p1<10;p1++){
+    if(!c[p1])continue;
+    const w1=c[p1]/N; c[p1]--;
+    for(let b1=0;b1<10;b1++){
+      if(!c[b1])continue;
+      const w2=w1*c[b1]/(N-1); c[b1]--;
+      for(let p2=0;p2<10;p2++){
+        if(!c[p2])continue;
+        const w3=w2*c[p2]/(N-2); c[p2]--;
+        const player=(p1+p2)%10;
+        for(let b2=0;b2<10;b2++){
+          if(!c[b2])continue;
+          const w4=w3*c[b2]/(N-3); c[b2]--;
+          const banker=(b1+b2)%10;
+          if(player>=8||banker>=8){
+            finish(player,banker,w4);
+          }else if(player<=5){
+            for(let p3=0;p3<10;p3++){
+              if(!c[p3])continue;
+              const w5=w4*c[p3]/(N-4); c[p3]--;
+              finishBanker((player+p3)%10,banker,w5,N-5,bankerNeedsThird(banker,p3));
+              c[p3]++;
+            }
+          }else{
+            finishBanker(player,banker,w4,N-4,bankerNeedsThird(banker,null));
+          }
+          c[b2]++;
+        }
+        c[p2]++;
+      }
+      c[b1]++;
+    }
+    c[p1]++;
+  }
+  return result;
+}
+function validateDrawingRules(p,b){
+  const player=total(p.slice(0,2)),banker=total(b.slice(0,2));
+  const natural=player>=8||banker>=8;
+  const playerDraw=!natural&&player<=5;
+  const playerThird=playerDraw&&p[2]?point(p[2]):null;
+  if((p.length===3)!==playerDraw)return "閒家第三張不符合標準補牌規則，請核對兩張牌點數。";
+  const bankerDraw=!natural&&bankerNeedsThird(banker,playerThird);
+  if((b.length===3)!==bankerDraw)return "莊家第三張不符合標準補牌規則，請核對莊家點數與閒家第三張。";
+  return "";
+}
+function fmtDelta(value){
+  const sign=value>0?"+":"";
+  return `較初始牌靴 ${sign}${value.toFixed(2)} 百分點`;
+}
+// B4: 以獨立算出的主注機率計算每單位淨報酬期望與 Kelly 公式解。
+// 莊、閒押注遇和局退回本金，所以和局對主注的 EV 為 0。
+function renderEV(probs){
+  const commissionMode=document.getElementById("commissionSelect").value;
+  const commission=commissionMode==="0.5six"?0:Number(commissionMode);
+  const tiePay=Number(document.getElementById("tiePaySelect").value);
+  const note=document.getElementById("evStatus");
+  if(!probs){
+    ["B","P","T"].forEach(key=>{
+      document.getElementById("ev"+key).textContent="—";
+      document.getElementById("kelly"+key).textContent="Kelly：—";
+    });
+    note.textContent="目前無法取得有效的主注機率，故不計算 EV。";
+    return;
+  }
+  const [pb,pp,pt,pb6]=probs;
+  const bankerNet=1-commission;
+  const ev={ B:bankerNet*pb-pp-(commissionMode==="0.5six"?0.5*pb6:0), P:pp-pb, T:tiePay*pt-(pb+pp) };
+  const nonTie=pb+pp;
+  const kelly={
+    B:nonTie>0?Math.max(0,(bankerNet*pb-pp)/(bankerNet*nonTie)):0,
+    P:nonTie>0?Math.max(0,(pp-pb)/nonTie):0,
+    T:Math.max(0,((tiePay+1)*pt-1)/tiePay)
+  };
+  ["B","P","T"].forEach(key=>{
+    const el=document.getElementById("ev"+key);
+    const value=ev[key]*100;
+    el.textContent=(value>0?"+":"")+value.toFixed(2)+"%";
+    el.style.color=value>0?"var(--green)":value<0?"var(--red)":"var(--text)";
+    document.getElementById("kelly"+key).textContent=(key==="B"&&commissionMode==="0.5six")?"Kelly：特殊雙賠率未提供":"Kelly 公式："+(kelly[key]*100).toFixed(2)+"%";
+  });
+  note.textContent="以目前牌靴條件機率估算；"+(commissionMode==="0.5six"?"免佣莊勝通常賠1：1，莊以6點勝出賠0.5：1（需要正確牌靴資料）。":"莊贏淨賠 "+bankerNet.toFixed(2)+"：1。")+" 閒贏1：1、和贏"+tiePay+"：1。";
+}
+// B7.1: Compare exactly the EV for a one-unit stake at the selected payout terms.
+// "relative" is NEVER an instruction to wager; if no EV > 0, abstention wins.
+function renderDirection(probs){
+ const relative=document.getElementById('directionRelative');
+ const relativeEv=document.getElementById('directionRelativeEv');
+ const action=document.getElementById('directionAction');
+ const why=document.getElementById('directionActionWhy');
+ const explanation=document.getElementById('directionExplain');
+ const verified=document.getElementById('directionVerified').checked;
+ if(!probs){relative.textContent='資料不足';relativeEv.textContent='無有效機率';action.textContent='觀望';why.textContent='目前無法判讀';explanation.textContent='剩餘牌數不足或記錄有誤，停止方向判讀。';return;}
+ const [pb,pp,pt,pb6]=probs;
+ const mode=document.getElementById('commissionSelect').value;
+ const tiePay=Number(document.getElementById('tiePaySelect').value);
+ const bankerEV=mode==='0.5six'?(pb-pp-.5*pb6):(.95*pb-pp);
+ const ev={B:bankerEV,P:pp-pb,T:tiePay*pt-(pb+pp)};
+ const names={B:'莊',P:'閒',T:'和'};
+ const ordered=Object.keys(ev).sort((a,b)=>ev[b]-ev[a]);
+ const best=ordered[0], second=ordered[1], bestPct=ev[best]*100;
+ relative.textContent=names[best];
+ relativeEv.textContent=`EV ${bestPct>=0?'+':''}${bestPct.toFixed(2)}%（相對最高）`;
+ const seen=allCards().length;
+ const difference=(ev[best]-ev[second])*100;
+ if(!verified){
+   action.textContent='資料待確認';why.textContent='先確認本牌靴是否完整跟牌';
+ } else if(bestPct<=0){
+   action.textContent='觀望';why.textContent='莊／閒／和三種下注的 EV 均不高於 0';
+ } else {
+   action.textContent='模型正 EV';why.textContent=`條件性相對偏向「${names[best]}」，不代表下一局會贏`;
+ }
+ explanation.textContent=`已記錄 ${seen} 張、${rounds.length} 局；最高與次高 EV 相差 ${difference.toFixed(2)} 百分點。`+
+    (seen===0?'目前僅是全新牌靴的基準模型，不是實戰訊號。':'資料須從本牌靴起始連續且正確記錄。')+
+    `「${names[best]}」只表示所選賠率下的相對期望值較高，不是勝率保證。`;
+}
+const directionVerifiedElement=document.getElementById('directionVerified');
+function syncDirectionVerification(){
+ directionVerifiedElement.checked=localStorage.getItem('b71_direction_checked_'+shoeId)==='yes';
+}
+directionVerifiedElement.addEventListener('change',()=>{
+ const key='b71_direction_checked_'+shoeId;
+ if(directionVerifiedElement.checked)localStorage.setItem(key,'yes');
+ else localStorage.removeItem(key);
+ renderProbability();
+});
+function renderProbability(){
+  const seen=allCards();
+  const remain=remainingPoints(seen);
+  const pointEl=document.getElementById("pointCounts");
+  pointEl.innerHTML=(remain||Array(10).fill("—")).map((n,i)=>`<div class="point-chip"><span class="label">${i} 點</span><span class="num">${n}</span></div>`).join("");
+  if(!baselineCache[decks]) baselineCache[decks]=exactProbabilities(remainingPoints([]));
+  const baseline=baselineCache[decks];
+  const probability=exactProbabilities(remain);
+  const names=["B","P","T"];
+  names.forEach((name,i)=>{
+    document.getElementById("prob"+name).textContent=probability?(100*probability[i]).toFixed(2)+"%":"—";
+    document.getElementById("delta"+name).textContent=probability&&baseline?fmtDelta((probability[i]-baseline[i])*100):"無法計算";
+  });
+  renderEV(probability);
+  renderDirection(probability);
+  const status=document.getElementById("calcStatus");
+  status.textContent=!probability?"牌組資料錯誤或剩餘不到 6 張，無法計算完整一局。":
+    seen.length===0?"目前顯示全新牌靴的基準機率；新增牌面後會自動更新。":
+    `已根據 ${seen.length} 張已出牌、${remain.reduce((a,b)=>a+b,0)} 張剩餘牌重新計算下一局機率。`;
+}
+function renderRoad(elId,arr,limit){const el=document.getElementById(elId);const list=limit?arr.slice(-limit):arr;el.innerHTML=list.map((x,i)=>`<div class="roadcell ${x}">${x==="B"?"莊":x==="P"?"閒":"和"}${i===list.length-1?'<span>新</span>':""}</div>`).join("");}
+function render(){
+ syncDirectionVerification();
+ const seen=allCards().length, totalDeck=decks*52;
+ document.getElementById("deckLabel").textContent=decks+" 副牌";
+ document.getElementById("seenCount").textContent=seen;
+ document.getElementById("leftCount").textContent=Math.max(0,totalDeck-seen);
+ document.getElementById("roundCount").textContent=rounds.length;
+ document.getElementById('shoeBadge').textContent=`目前只計算本牌靴（${decks} 副牌、啟用 ${new Date(shoeStartedAt).toLocaleString('zh-TW')}）。已封存 ${archives.length} 個牌靴；不會混入計算。`;
+ renderArchives();
+ const last=rounds[rounds.length-1];
+ document.getElementById("lastP").innerHTML=last?last.p.map(cardHtml).join(""):"";
+ document.getElementById("lastB").innerHTML=last?last.b.map(cardHtml).join(""):"";
+ document.getElementById("lastResult").innerHTML=last?`閒家 ${total(last.p)} 點；莊家 ${total(last.b)} 點。<strong>${resultName(resultOf(last))}</strong>`:"尚未輸入牌局。";
+ renderRoad("miniRoad",rounds.map(resultOf),18);renderRoad("fullRoad",rounds.map(resultOf));
+ document.getElementById("roadEmpty").style.display=rounds.length?"none":"block";
+ document.getElementById("fullRoadEmpty").style.display=rounds.length?"none":"block";
+ document.getElementById("bWins").textContent=rounds.filter(r=>resultOf(r)==="B").length;
+ document.getElementById("pWins").textContent=rounds.filter(r=>resultOf(r)==="P").length;
+ document.getElementById("ties").textContent=rounds.filter(r=>resultOf(r)==="T").length;
+ const wrap=document.getElementById("roundTable");
+ if(!rounds.length){wrap.innerHTML='<p class="hint">尚無明細。</p>'}else{
+ wrap.innerHTML='<table><thead><tr><th>局</th><th>閒家</th><th>莊家</th><th>點數</th><th>結果</th><th></th></tr></thead><tbody>'+rounds.slice().reverse().map((r,ri)=>{let idx=rounds.length-ri-1;return `<tr><td>${idx+1}</td><td>${r.p.filter(Boolean).map(fmtCard).join(" ")}</td><td>${r.b.filter(Boolean).map(fmtCard).join(" ")}</td><td>${total(r.p)}:${total(r.b)}</td><td>${resultName(resultOf(r))}</td><td><button class="small danger" onclick="deleteRound(${idx})">刪除</button></td></tr>`}).join("")+'</tbody></table>';
+ }
+ renderProbability();
+ save();
+}
+function deleteRound(i){rounds.splice(i,1);render()}
+function initSelects(){["p1","p2","p3","b1","b2","b3"].forEach(id=>document.getElementById(id).innerHTML=cardOptions)}
+function resetForm(){["p1","p2","p3","b1","b2","b3"].forEach(id=>document.getElementById(id).value="")}
+function addRound(){
+ const p=["p1","p2","p3"].map(id=>document.getElementById(id).value).filter(Boolean);
+ const b=["b1","b2","b3"].map(id=>document.getElementById(id).value).filter(Boolean);
+ if(p.length<2||b.length<2){alert("每一方至少要輸入兩張牌。");return}
+ const cards=[...p,...b], seen=allCards();let localSeen={};
+ for(const c of cards)localSeen[c]=(localSeen[c]||0)+1;
+ for(const c of cards){let inShoe=seen.filter(x=>x===c).length;if(inShoe+localSeen[c]>decks){alert("牌面數量超出目前牌靴可用張數，請檢查是否輸入錯誤。");return}}
+ rounds.push({p,b,at:new Date().toISOString()});resetForm();render();document.querySelector('[data-tab="analyze"]').click();
+}
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b===btn));document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("hidden",p.id!==btn.dataset.tab))}));
+document.getElementById("commissionSelect").addEventListener("change",renderProbability);
+document.getElementById("tiePaySelect").addEventListener("change",renderProbability);
+document.getElementById("addRound").addEventListener("click",addRound);
+document.getElementById("clearForm").addEventListener("click",resetForm);
+document.getElementById("goHistory").addEventListener("click",()=>document.querySelector('[data-tab="history"]').click());
+document.getElementById("undoLast").addEventListener("click",()=>{if(rounds.length){rounds.pop();render()}});
+document.getElementById("applySettings").addEventListener("click",()=>{const action=document.getElementById("shoeAction").value;const newDecks=Number(document.getElementById("deckSelect").value);if(action==="new"){if(!confirm("開始新牌靴？目前有牌局的紀錄將封存，並從 0 張重新計算。"))return;archiveCurrentShoe();pendingScreenshotDigest=null;}else if(newDecks!==decks && rounds.length){alert("切換牌副數時，請選『開始新牌靴』，避免把舊牌靴紀錄算進新牌靴。");return;}decks=newDecks;document.getElementById("shoeAction").value="keep";render();alert("設定已套用。")});
+document.getElementById("clearHistory").addEventListener("click",()=>{if(confirm("確定清除全部牌局紀錄？此動作無法復原。")){rounds=[];render()}});
+document.getElementById("exportBtn").addEventListener("click",()=>downloadRecords({version:"B7.1",decks,rounds,archives,shoeId,shoeStartedAt},"baccarat-b71-records.json"));
+// === B 版：截圖本機定位、按需 OCR、人工逐張確認 ===
+const scan = { image:null, canvas:null, slots:[], digest:null, running:false };
+
+// 本機圖樣比對：只以使用者提供的兩張示範截圖建立保守的圖樣樣本。
+// 不是所有 52 張牌的訓練模型；不符合樣本的牌必須以 OCR 或人工核對。
+const CARD_REFERENCE_MASKS = [{"card":"7♥","mask":"AgAAAAAAAACAAgAAAAAAAAAAAgAAAAAAQAAAAgAAAAAAUBQEAgAAAAAAdFQEAgAAAAAAdEAFAgAAAAAAUAANAgAAAAAAQAAAAgAAAAAAAAAAAgAUAEAAAAEAAgAVAFAAQAEAAgB9APQB0AcAAkB1AFUBVAcAAkAVAFUBVAUAAtAVAFUAVAUAAkBVAFUBVAUAAkB1ANQBUAcAAgA1ANQBUAcAAgAUAFBQQQEAAgAAAADQAQAAAgAAAABUAQAAAgAAAABVAQAAAgAAAABVAQAAAgAAAABVAQAAAgAAAABUAQAAAgAAAADQAQAAAgAUAFBQQQEAAgA1ANQBUAcAAkB1AFQBUAUAAkAVAFUBVAUAAtAVAFcAVAUAAkAVAFUBVAUAAkB1AFUBVAUAAgA9APQB0AcAAgAUAFAAQAEAAgAAAAAAAAEAAgAAAAAAAAAAEgAFAAAAAAAAUgAVAAAAAAAAUgUdAAAAAAAAEhUdAAAAAAAAEhAFAAAAAAAAAgAAAAAAAAAAAgAAAAAAAAAAAgAAAAAAAACAqqqqiqAgqqqKqqqqiqIoqqqqqqqqigIoqqqK"},{"card":"4♥","mask":"AgAAAAAAAACgAgAAAAAAAACAAgQAAAAAAACAAg0AAAAAAACAQgUAAAAAAACAQgUAAAAAAACAQhUAAAAAAACAQhUAAAAAAACAAhVUFQBUFQCAAgBdFQBddQCAQgVVFQBVdQCAwh9UFQBUFQCAQgfUBwBQBQCAAgFQAQBAAQCAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAABAAQBACAAgBVHQB0FQCAAgBdFQBddVSBAgBVFQBUVfSBAgBUFQBUFVSBAgDQBQBQBwCAAgBAAQBAARSAAgAAAAAAAFSAAgAAAAAAAFSBAgAAAAAAAFSBAgAAAAAAAFSAAgAAAAAAAFSAAgAAAAAAABSAAgAAAAAAAACAAgAAAAAAAACgqqoqqqqqqqqqqqoqqqqqqqqq"},{"card":"7♦","mask":"AgAAAAAAAACAAgAAAAAAAACAQhUAAAAAAACAQhUAAAAAAACAAgQAAAAAAACAAgUAAAAAAACAAgEAAAAAAACAAgEAAAAAAACAAgBAAQBAAQCAAgDQBQBQBwCAAgVUBQBQFQCAQgd0HQBUFQCAQgfQBQBQBQCAAgHQAQBABQCAAgBAABQAAQCAAgAAAF0AAACAAgAAQFUBAACAAgAAQNcBAACAAgAAAH0AAACAAgAAABQAAACAAgBQARBAAQCAAgDQBQBQBQCAAgBUBQBQFQCAAgB0HQB0FQCAAgDUBQBQBQCAAgDQAQBABQCAAgAAAAAAAQCAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgBAAQBAAQCAAgDQBQBQB1CBAgBUFQBUFfCBAgB0FQBUHVCAAgBQBQBQBQCAAgBQAQBABQCAAgAAAAAAAUCAAgAAAAAAAECAAgAAAAAAAFCAAgAAAAAAABCAAgAAAAAAABSAAgAAAAAAAFSDAgAAAAAAAACAAgAAAAAAAACAqqqqqqqqqqqqqqqqqqqqqqqq"},{"card":"J♥","mask":"AAAAAAAAAACAAAUAAAAAAAAAAAUAAAAAAAAAAAQAAAAAAAAAAAQAAAAAAAAAAAQAAAAAAAAAAAUAAAAAAAAAQIUA8PX9AAIAAAFUUV9VAAIAQAXdAcI/0AMA0B1VAQAN/AMAQAd0AAAV0AMAQAVQAMAVwAMAAAAAAPB/wQMAAAAAgP//wwMAAAAA+Kr+0wMAAIDA/6r+xwMAAID0/6r+hwIAAID//6v/FwIAAMD//+//HwIAAMD/////XwIAAMD//4P//wIAAMD//////wIAAID//9f//wIAAID//+r//wMAAID1//v//wMAAID0/+r//wAAAIDWv6r/XwIAAIDSv6r/AwIAAMDjv6p/AAAAAMDj//8LAAAAAMDD/w8AAAAAAMADVQMAAEAAAMAHVAEAFdABAMA3VABAFfQDAMA3/IFQdVQBAIAB9NdDVQAAAIAAX1VNFUABAAAAXV0BAFABAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAFQAAAAAAAAAAACAAwAAAAAAAADAqqr///+rqqqqqqqqqqqqqqqq"},{"card":"6♣","mask":"AQAAAAAAAABAAAoAAAAAAAAAgAgAAAAAAAAAgAAAAAAAAAAAgAoAAAAAAAAAgAgAAAAAAAAAgAgAAAAAAAAAgAqAAgCACgAAAACgAgCACgAAAAKoCgCgKgAAgAqqKgCoqgAAgCqqKgCoqgAAgAqoKgCoKgAAAACAAgCAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAgCAAgAAAACgAgCACgAAAACoCgCgKgAAAACqKgCoqgAAAACqKgCoqgAAAACoKgCoqgAAAACAAgCAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAgCAAgAAAACgAgCACqAAAACgCgCgCqgCAACqKgCoqqACAACqKgCoqoAAAACqKgCoqgAAAACAAgCAAqACAACAAAAAAiACAAAAAAAAACACAAAAAAAAAKACAAAAAAAAAIACAAAAAAAAACACAAAAAAAAAKACAAAAAAAAAAAAAwAAAAAAAADAqqoAoCrqq6uqqqqKsiqqqqqq"},{"card":"2♦","mask":"AAAAAAAAEBQFAAAAAAAAVFQEAAAAAAAAdFQFAAAAAAAAVEQFAAAAAAAAEAQFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAVAAAAFAAAAABdAAAAVQAAAEB3AAAAVQEAAEDXAABA1wEAAEBdAAAAVQEAAAAVAAAAdQAAAAAEAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAUBAEAAAAAAAAUFEdAAAAAAAAEBUdAAAAAAAAEBQFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAqqqqggAgqqqKqqqqiqAoqqqKqqqqiqIoqqqKqqqqigAoqqqqqqqqiqgoqqqq"},{"card":"K♥","mask":"QhUAAAAAAACAQgUAAAAAAACAQgUAAAAAAACAQgUAAAAAAACAQgUAAAAAAACAQgUAAAAAAACAQhVA4b8rAAKAAgBdwf8/AACAQlX9gaoOAAKAwh/1AQAAAACAQhdUAAAAAACAAgUQAAAAHACAAgAAAAAAFQCAAgAAQFUCvgKAAgDAQP+CqgKAAgD8R/+gqwKAAoD/X//wvwKAAoBfB/34/wKAAoBXAX343wKAAoDXK338HwKAAgDVLzz8HwKAAgDWLzz4HwKAAgDUPz34VwKAAgDWP33o1QKAAoD2K31A1QKAAoD+K3/Q9wKAAoD+C//x/wKAAoDqC//RPwCAAoCqgvcBAwCAAoCqAFQBAACAAgAUAAAAAACAAgAwAAAABFCAAgAAAABAHfSBAgAAAABAX/SDAgAAsKrCd1SBAgAA/P9DVQCAAgAAqP4OEFaFAgAAAAAAAFSBAgAAAAAAAFCBAgAAAAAAANCBAgAAAAAAAFCBAgAAAAAAAFCBAgAAAAAAAFSFAgAAAAAAAACACgAAAAAAAACgqqoqqqqqqqqqKqoqqqqqqqqqqqqqqqqqqqqq"},{"card":"4♥","mask":"AgAAAAAAAACAAgAAAAAAAACAAgQAAAAAAACAAhUAAAAAAACAAhUAAAAAAACAQhUAAAAAAACAQhUAAAAAAACAAhVUBQBQFQCAAgRVHQB0VQCAAgVdFQB8dQCAQhVUFQBUFQCAQh9UFQBUFQCAAgVQBQBQBwCAAgBAAQBAAQCAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgB0HQB0HQCAAgBdHQB8fVCAAgBVFQBUVfSBAgBUFQBUFVSBAgDQBQBQBQCAAgBAAQBAARSAAgAAAAAAAFSAAgAAAAAAAFSBAgAAAAAAAFSBAgAAAAAAAFSAAgAAAAAAAHSAAgAAAAAAABCAAgAAAAAAAACACgAAAAAAAACgqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"},{"card":"K♣","mask":"gyoAAAAAAAAAgwoAAAAAAAAAgwoAAAAAAAAAgwoAAAAAAAAAgwoAAAAAAAAAgyoAAAAAAAAAg6qAgOqtAAIAAwCgwv+/AAIAAwqggv8/AAIAgwqqCgIAAAAAgyqqCgAAAAAAAwqAAAAAAAAAAwAAAAAAAAAAAwAAAABAAQAAAwAAqPpfBQAAAwAAqP5XDQAAAwAugF5VDwAAAkA/in5VDwAAAkC/L3/1DwIAAkD/P3/VjgIAAkD/f3/VSgMAAkD/f/31+wMAAkCjd/39fwMAAoCjV/39fwMAAgDiX634egMAAgDwVaWieAMAAgDwVfUCeAIAAgDQ1f8qAAAAAgBQ9b8qAAAAAgBAAQAAAAAAAgAAAAAAAAAAAgAAAAAACqACAgAAAACgqqoKAgAAIICgqqACAgAA/P+CKoAAAgAA/v+DCgIAAgAA+v8KCqoKAgAAAAAAAKAKAgAAAAAAAKACAgAAAAAAAIACAgAAAAAAAIACAgAAAAAAAKAKAgAAAAAAACgKAwAAAAAAAACACgAAAAAAAADgqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"},{"card":"7♦","mask":"AxUAAAAAAAAAAxUAAAAAAAAAAwQAAAAAAAAAAwUAAAAAAAAAAwUAAAAAAAAAAwEAAAAAAAAAAwBAAQAABQAAAwBQBQBAFwAAAwVUFQBQFQAAAw90HQDQdQAAQx/QFwBQFQAAAwVQBQBABwAAAwBAARQABQAAAwAAAHUAAAAAAwAAAFUBAAAAAwAAQNcDAAAAAwAAAFUBAAAAAwAAAHQAAAAAAwBAARAABQAAAwBQBQBABwAAAwBUFQBQFQAAAwBUHQDQVQAAAwBUFQDQFQAAAwBQBwBABwAAAwBAAQAAAQAAAwAAAAAAAAAAAwAAAAAAAAAAAwAAAAAAAAAAAwAAAAAAAAAAAwAAAAAAAAAAAwBAAQAAAQAAAwBQBQBAB0ABAwDQFwBQF9ABAwB0HQDQVdABAwBUFQBQFUAAAwBQBwBAFwAAAwBAAQBABQAAAwAAAAAAAEABAwAAAAAAAEABAwAAAAAAAEAAAwAAAAAAAFAAAwAAAAAAAFABAwAAAAAAAFABAwAAAAAAAAAACgAAAAAAAADAqqoCgCqoqqqqqqqKojqoqqqqqqrKgy68qqqq"}];
+const DECODED_REFS = CARD_REFERENCE_MASKS.map(v=>({card:v.card, mask:Uint8Array.from(atob(v.mask),c=>c.charCodeAt(0))}));
+function binaryCardMask(canvas,rect){
+  const tmp=document.createElement("canvas");tmp.width=36;tmp.height=48;
+  const tx=tmp.getContext("2d",{willReadFrequently:true});
+  tx.drawImage(canvas,rect.x,rect.y,rect.w,rect.h,0,0,36,48);
+  const data=tx.getImageData(0,0,36,48).data;
+  const out=new Uint8Array(432);
+  for(let i=0;i<36*48;i++){
+    const q=i*4,r=data[q],g=data[q+1],b=data[q+2];
+    const isRed=r>70&&r>g*1.2;
+    const isDark=Math.max(r,g,b)<170;
+    const bits=Number(isRed)+(isDark?2:0);
+    out[i>>2]|=bits<<((i&3)*2);
+  }
+  return out;
+}
+function patternSuggestionB2(slot){
+  const bits=binaryCardMask(scan.canvas,slot.rect);
+  const scores=[];
+  for(const ref of DECODED_REFS){
+    let mismatch=0;
+    for(let i=0;i<bits.length;i++){
+      let a=bits[i],b=ref.mask[i];
+      for(let j=0;j<4;j++){if((a&3)!==(b&3))mismatch++;a>>=2;b>>=2;}
+    }
+    scores.push({card:ref.card,score:mismatch/(36*48)});
+  }
+  scores.sort((a,b)=>a.score-b.score);
+  const best=scores[0];
+  const second=scores.find(v=>v.card!==best.card);
+  // B2 校準：先前門檻過嚴，連兩張示範截圖本身也幾乎無法通過。
+  // 新門檻只作為「建議候選」，不代表可靠辨識；每張必須由使用者勾選核對。
+  // 對 J 等人頭牌保留較大的圖樣差異容忍度，但不放行兩種牌難以區分的結果。
+  const limit=best.card.startsWith("J")?.21:.16;
+  const separation=second?second.score-best.score:0;
+  if(best.score<=limit && separation>=.045){
+    const low=best.score>.115;
+    return {card:best.card,note:`${low?"低信心":"實驗"}圖樣候選：${best.card}；相似度誤差 ${(best.score*100).toFixed(1)}%，須親眼核對並勾選確認。`};
+  }
+  return {card:"",note:"尚無可靠的候選牌，請嘗試 OCR 或自行選擇；確認後才可加入紀錄。"};
+}
+
+const shotStatus=document.getElementById("shotStatus");
+const shotBox=document.getElementById("shotPreviewBox");
+const shotCanvas=document.getElementById("shotCanvas");
+const cardWrap=document.getElementById("detectedCards");
+function putStatus(s){shotStatus.textContent=s;}
+function sampleRGB(data,w,x,y){const p=(Math.floor(y)*w+Math.floor(x))*4;return [data[p],data[p+1],data[p+2]];}
+function isPanelColor(r,g,b,side){
+  return side==="P" ? b>r*1.28&&b>g*1.12&&b>38&&g>10&&r<110
+    : r>g*1.30&&r>b*1.22&&r>35&&g<115;
+}
+function longRuns(flags,minLength){
+  const groups=[];let s=-1;
+  for(let i=0;i<=flags.length;i++){
+    if(i<flags.length&&flags[i]&&s<0)s=i;
+    if((i===flags.length||!flags[i])&&s>=0){if(i-s>=minLength)groups.push([s,i-1]);s=-1;}
+  }
+  return groups;
+}
+function findPanels(canvas){
+  const ctx=canvas.getContext("2d",{willReadFrequently:true});
+  const {width:w,height:h}=canvas;
+  const pixels=ctx.getImageData(0,0,w,h).data;
+  const left=[Math.floor(w*.06),Math.floor(w*.40)];
+  const right=[Math.floor(w*.60),Math.floor(w*.94)];
+  const candidate=[];
+  for(let y=Math.floor(h*.08);y<Math.floor(h*.90);y+=2){
+    let lp=0,rp=0,n=0;
+    for(let x=left[0];x<left[1];x+=3){const [r,g,b]=sampleRGB(pixels,w,x,y);if(isPanelColor(r,g,b,"P"))lp++;n++;}
+    let m=0;
+    for(let x=right[0];x<right[1];x+=3){const [r,g,b]=sampleRGB(pixels,w,x,y);if(isPanelColor(r,g,b,"B"))rp++;m++;}
+    candidate.push(lp/n>.29&&rp/m>.29);
+  }
+  const bands=longRuns(candidate,Math.max(12,Math.floor(w*.042)));
+  bands.sort((a,b)=>(b[1]-b[0])-(a[1]-a[0]));
+  if(!bands.length)return null;
+  const top=Math.floor(h*.08)+bands[0][0]*2;
+  const checkY=Math.min(h-1,top+Math.max(12,Math.round(w*.03)));
+  function colorRun(side,a,b){
+    const v=[];
+    for(let x=a;x<b;x++){
+      let count=0;
+      for(const dy of [-2,0,2]){const [r,g,bl]=sampleRGB(pixels,w,x,checkY+dy);if(isPanelColor(r,g,bl,side))count++;}
+      v.push(count>=2);
+    }
+    const ranges=longRuns(v,Math.max(22,Math.round(w*.08))).sort((a,b)=>(b[1]-b[0])-(a[1]-a[0]));
+    if(!ranges.length)return null;
+    return [ranges[0][0]+a,ranges[0][1]+b-(b-a)+1];
+  }
+  const p=colorRun("P",Math.floor(w*.01),Math.floor(w*.46));
+  const b=colorRun("B",Math.floor(w*.54),Math.floor(w*.99));
+  if(!p||!b||p[1]-p[0]<w*.15||b[1]-b[0]<w*.15)return null;
+  return { P:{x:p[0],y:top,w:p[1]-p[0],h:(p[1]-p[0])*.67},
+           B:{x:b[0],y:top,w:Math.min(w-b[0],p[1]-p[0]),h:(p[1]-p[0])*.67} };
+}
+function locateCardsB2(canvas,panel,side){
+  const ctx=canvas.getContext("2d",{willReadFrequently:true});
+  const {width:w,height:h}=canvas, imageData=ctx.getImageData(0,0,w,h).data;
+  const x0=Math.max(0,Math.round(panel.x)),x1=Math.min(w,Math.round(panel.x+panel.w));
+  const y0=Math.max(0,Math.round(panel.y+panel.h*.55));
+  const y1=Math.min(h,Math.round(panel.y+panel.h*.94));
+  const col=[];
+  for(let x=x0;x<x1;x++){
+    let count=0;
+    for(let y=y0;y<y1;y++){
+      const [r,g,b]=sampleRGB(imageData,w,x,y);
+      if(r>170&&g>170&&b>170)count++;
+    }
+    col.push(count/Math.max(1,y1-y0)>.22);
+  }
+  const ranges=longRuns(col,Math.max(9,Math.round(panel.w*.055)));
+  const found=[];
+  for(const [a,b] of ranges){
+    const left=x0+a,right=x0+b;
+    // 同平台的直立牌高約為寬的 1.34 倍，橫向第三張高約為寬的 .69 倍。
+    // 人頭牌正中央有深色花紋，不能以「白色像素行」推估高度，否則會把 K/J 誤裁半張。
+    const rawW=right-left+1;
+    const sideways=rawW>panel.w*.22;
+    const expectedH=rawW*(sideways?.69:1.34);
+    const bottom=Math.min(h,Math.round(panel.y+panel.h*.91));
+    const rect={x:Math.max(0,left-1),y:Math.max(0,Math.round(bottom-expectedH)-1),
+      w:Math.min(w-left+1,rawW+2),h:Math.round(expectedH)+2};
+    if(rect.w<12||rect.h<14)continue;
+    found.push({side,rect,card:"",note:"尚未 OCR，請核對牌面",confidence:0,
+      sideways:rect.w/rect.h>.95});
+  }
+  // 只有合理的 2 或 3 張才視為完整辨識；裁切失敗時保留人工輸入模式。
+  return found.length>=2&&found.length<=3?found:[];
+}
+function renderShot(){
+  if(!scan.canvas)return;
+  const c=scan.canvas;
+  const ctx=shotCanvas.getContext("2d");
+  shotCanvas.width=c.width;shotCanvas.height=c.height;
+  ctx.drawImage(c,0,0);
+  for(const s of scan.slots){
+    const {x,y,w,h}=s.rect;
+    ctx.strokeStyle=s.side==="P"?"#74ccff":"#ffb0bc";
+    ctx.lineWidth=Math.max(2,c.width/350);
+    ctx.strokeRect(x-2,y-2,w+4,h+4);
+  }
+  cardWrap.innerHTML="";
+  for(let i=0;i<scan.slots.length;i++){
+    const slot=scan.slots[i];
+    const cell=document.createElement("div");cell.className="detect-card";
+    const label=document.createElement("div");label.className="slot-label "+(slot.side==="P"?"shot-blue":"shot-red");
+    label.textContent=(slot.side==="P"?"閒家":"莊家")+"第 "+scan.slots.filter((s,k)=>k<=i&&s.side===slot.side).length+" 張";
+    const cropWrap=document.createElement("div");cropWrap.className="crop";
+    const cc=document.createElement("canvas");
+    cc.width=Math.max(120,slot.rect.w*3);cc.height=Math.max(120,slot.rect.h*3);
+    cc.getContext("2d").drawImage(c,slot.rect.x,slot.rect.y,slot.rect.w,slot.rect.h,0,0,cc.width,cc.height);
+    cropWrap.append(cc);
+    const sel=document.createElement("select");sel.setAttribute("aria-label",label.textContent+"牌面");
+    sel.innerHTML=cardOptions;
+    sel.value=slot.card;
+    sel.addEventListener("change",()=>{
+      slot.card=sel.value;slot.confirmed=false;
+      slot.note="已由你手動選擇；請對照圖片再次核對並勾選確認";
+      slot.confidence=0;renderShot();
+    });
+    const note=document.createElement("p");note.className="scan-note"+(!slot.card?" warn":"");
+    note.textContent=slot.note+(slot.sideways?"；橫向牌要特別確認":"");
+    const confirm=document.createElement("label");confirm.className="slot-confirm";
+    const cb=document.createElement("input");cb.type="checkbox";cb.checked=Boolean(slot.confirmed);
+    cb.disabled=!slot.card;cb.setAttribute("aria-label",label.textContent+"已核對");
+    cb.addEventListener("change",()=>{slot.confirmed=cb.checked;updateShotConfirmation();});
+    confirm.append(cb,document.createTextNode(" 我已核對數字與花色"));
+    cell.append(label,cropWrap,sel,note,confirm);cardWrap.append(cell);
+  }
+  updateShotConfirmation();
+}
+function updateShotConfirmation(){
+  const count=scan.slots.filter(s=>s.confirmed&&s.card).length;
+  const needed=scan.slots.length;
+  document.getElementById("verifyCount").textContent=needed?`已逐張確認 ${count}/${needed} 張；全部確認後才可帶入。`:"尚無待核對牌面。";
+  document.getElementById("useDetected").disabled=needed===0||count!==needed;
+}
+function resetShot(){
+  pendingScreenshotDigest=null;
+  scan.image=null;scan.canvas=null;scan.slots=[];scan.digest=null;scan.running=false;
+  shotBox.classList.add("hidden");document.getElementById("scanActions").classList.add("hidden");
+  document.getElementById("shotConfirm").classList.add("hidden");
+  cardWrap.replaceChildren();document.getElementById("imageInput").value="";updateShotConfirmation();
+  putStatus("尚未選擇截圖。");
+}
+async function readScreenshot(file){
+  resetShot();if(!file)return;
+  if(!file.type.startsWith("image/")){putStatus("請選擇 PNG 或 JPEG 等圖片。");return;}
+  putStatus("正在讀取圖片並尋找紅、藍牌面區……");
+  let url=URL.createObjectURL(file);
+  try{
+    const img=new Image();
+    await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url;});
+    const scale=Math.min(1,1000/img.naturalWidth);
+    const canvas=document.createElement("canvas");
+    canvas.width=Math.round(img.naturalWidth*scale);
+    canvas.height=Math.round(img.naturalHeight*scale);
+    canvas.getContext("2d",{willReadFrequently:true}).drawImage(img,0,0,canvas.width,canvas.height);
+    scan.image=img;scan.canvas=canvas;
+    if(window.crypto&&crypto.subtle){
+      const bytes=await file.arrayBuffer();
+      const hash=await crypto.subtle.digest("SHA-256",bytes);
+      scan.digest=Array.from(new Uint8Array(hash)).map(v=>v.toString(16).padStart(2,"0")).join("");
+    }
+    const panels=findPanels(canvas);
+    if(!panels){putStatus("未找到對應的紅、藍牌面區域。請改選完整且發牌結束的直播截圖，或改用手動輸入。");return;}
+    const p=locateCards(canvas,panels.P,"P");
+    const b=locateCards(canvas,panels.B,"B");
+    if(p.length<2||b.length<2){putStatus(`已找到紅、藍區域，但裁切到閒 ${p.length} 張、莊 ${b.length} 張，無法確認完整牌局。請換圖或手動輸入。`);return;}
+    scan.slots=[...p,...b];
+    for(const slot of scan.slots){
+      const proposal=patternSuggestion(slot);
+      slot.card=proposal.card;slot.confirmed=false;slot.note=proposal.note;
+    }
+    shotBox.classList.remove("hidden");
+    document.getElementById("scanActions").classList.remove("hidden");
+    document.getElementById("shotConfirm").classList.remove("hidden");
+    putStatus(`已找到閒家 ${p.length} 張、莊家 ${b.length} 張；圖樣比對提出 ${scan.slots.filter(s=>s.card).length} 張實驗候選牌。候選不等於確認，請逐張核對並打勾。`);
+    renderShot();
+  }catch(err){console.error(err);putStatus("圖片讀取失敗，請改選其他 PNG/JPEG。 "+String(err.message||err));}
+  finally{URL.revokeObjectURL(url);}
+}
+function loadOcrScript(){
+  if(window.Tesseract)return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const script=document.createElement("script");
+    script.src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+    script.onload=()=>window.Tesseract?resolve():reject(new Error("OCR 元件無法啟動"));
+    script.onerror=()=>reject(new Error("OCR 元件下載失敗，請確認網路或改用手動輸入"));
+    document.head.append(script);
+  });
+}
+function makeRankCanvas(slot){
+  const {x,y,w,h}=slot.rect;
+  const src=scan.canvas,canvas=document.createElement("canvas");
+  canvas.width=250;canvas.height=260;
+  const ctx=canvas.getContext("2d",{willReadFrequently:true});
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.imageSmoothingEnabled=true;
+  // 橫向牌先逆時針旋轉成直立；右上角的橫向牌號會回到左上角。
+  const norm=document.createElement("canvas");
+  norm.width=slot.sideways?h:w;norm.height=slot.sideways?w:h;
+  const nx=norm.getContext("2d");
+  if(slot.sideways){nx.translate(0,w);nx.rotate(-Math.PI/2);}
+  nx.drawImage(src,x,y,w,h,0,0,w,h);
+  // 只擷取左上角的字母／數字，避開花色和人頭像。
+  ctx.drawImage(norm,Math.max(1,norm.width*.025),Math.max(1,norm.height*.025),norm.width*.32,norm.height*.25,45,25,160,190);
+  const d=ctx.getImageData(0,0,canvas.width,canvas.height);
+  for(let i=0;i<d.data.length;i+=4){
+    const r=d.data[i],g=d.data[i+1],b=d.data[i+2];
+    const fg=(r<145&&g<145&&b<145)||(r>55&&r>g*1.24&&r>b*1.19);
+    d.data[i]=d.data[i+1]=d.data[i+2]=fg?0:255;d.data[i+3]=255;
+  }
+  ctx.putImageData(d,0,0);
+  return canvas;
+}
+function guessSuit(slot){
+  // 保守判斷紅黑顏色；黑桃與梅花、紅心與方塊不能只憑顏色區分。
+  // 未經額外可靠的花色分類，不填入任何猜測，避免錯誤扣牌。
+  return null;
+}
+async function runOcr(){
+  if(!scan.canvas||scan.running)return;
+  scan.running=true;
+  const btn=document.getElementById("autoOcrBtn");btn.disabled=true;
+  let worker=null;
+  try{
+    putStatus("正在載入 OCR（第一次需要下載，可能等候較久）……");
+    await loadOcrScript();
+    worker=await window.Tesseract.createWorker("eng",1,{logger:m=>{
+      if(m.status&&m.progress!==undefined)putStatus(`OCR：${m.status} ${Math.round(m.progress*100)}%`);
+    }});
+    await worker.setParameters({tessedit_char_whitelist:"A1234567890JQK",tessedit_pageseg_mode:"10"});
+    for(let i=0;i<scan.slots.length;i++){
+      const slot=scan.slots[i];
+      putStatus(`辨識第 ${i+1}/${scan.slots.length} 張：僅嘗試辨識角落牌號……`);
+      try{
+        const result=await worker.recognize(makeRankCanvas(slot));
+        let rank=(result.data.text||"").toUpperCase().replace(/[^A-Z0-9]/g,"").trim();
+        if(rank==="I"||rank==="L")rank="1";
+        if(rank==="1")rank="A";
+        if(!ranks.includes(rank))rank="";
+        const suit=guessSuit(slot);
+        // OCR 只提供牌號，花色無可靠結論時永遠保留未選狀態。
+        slot.note=rank?`文字 OCR 猜測：${rank}，花色尚不能可靠辨識，請自行核對並選擇`:
+          "文字 OCR 無法確認這張牌，請從放大牌面手動選擇";
+        slot.ocrRank=rank;slot.confidence=Number(result.data.confidence)||0;
+        if(rank&&suit&&slot.confidence>88){slot.card=rank+suit;slot.confirmed=false;slot.note="OCR 候選，仍須人工核對並打勾";}
+      }catch(e){slot.note="OCR 辨識失敗，請手動選擇";console.warn(e);}
+      renderShot();
+    }
+    putStatus("OCR 已完成。請逐張檢查裁切圖，在每張牌下方選擇完整的『數字＋花色』。未確認的牌不會加入牌靴。");
+  }catch(err){console.error(err);putStatus("無法載入 OCR："+String(err.message||err)+"。已裁切的牌仍可手動選擇。");}
+  finally{if(worker)try{await worker.terminate();}catch(e){}scan.running=false;btn.disabled=false;}
+}
+function applyDetected(){
+  if(!scan.slots.length)return;
+  if(scan.slots.some(s=>!s.card || !s.confirmed)){alert("還有牌未逐張核對。請選好數字和花色，並勾選每張牌的『我已核對』，才能帶入。");return;}
+  const p=scan.slots.filter(s=>s.side==="P").map(s=>s.card);
+  const b=scan.slots.filter(s=>s.side==="B").map(s=>s.card);
+  const err=validateDrawingRules(p,b);
+  if(err){alert("這組牌與百家樂標準補牌規則不一致：\n"+err+"\n請核對牌面是否漏拍、截圖是否在發牌結束後取得。");return;}
+  if(scan.digest && rounds.some(r=>r.screenshotDigest===scan.digest)){
+    alert("這張截圖已被加入過牌靴，為避免重複扣牌，無法重複加入。");return;
+  }
+  learnVerifiedCards();
+  resetForm();
+  p.forEach((v,i)=>document.getElementById("p"+(i+1)).value=v);
+  b.forEach((v,i)=>document.getElementById("b"+(i+1)).value=v);
+  putStatus("已帶入下方表單；請再次核對閒家／莊家牌面，最後按『加入牌局』才會儲存。" );
+  document.getElementById("manualEntryCard").scrollIntoView({behavior:"smooth",block:"start"});
+  pendingScreenshotDigest=scan.digest;
+}
+let pendingScreenshotDigest=null;
+const oldAddRound=addRound;
+// 儲存紀錄的原邏輯仍處理合法性與剩餘牌數；避免不完整 OCR 直接入庫。
+addRound=function(){
+  const before=rounds.length;
+  const p=["p1","p2","p3"].map(id=>document.getElementById(id).value).filter(Boolean);
+  const b=["b1","b2","b3"].map(id=>document.getElementById(id).value).filter(Boolean);
+  if(p.length>=2&&b.length>=2){
+    const err=validateDrawingRules(p,b);
+    if(err){alert(err);return;}
+    if(pendingScreenshotDigest&&rounds.some(r=>r.screenshotDigest===pendingScreenshotDigest)){
+      alert("已匯入過相同截圖，請勿重複記錄。");return;
+    }
+  }
+  oldAddRound();
+  if(rounds.length>before){
+    if(pendingScreenshotDigest){rounds[rounds.length-1].screenshotDigest=pendingScreenshotDigest;save();}
+    pendingScreenshotDigest=null;
+  }
+};
+// 前一段程式已綁定舊的 addRound，因此更換事件監聽器以套用驗證。
+// 改用 capture 先處理以避免舊綁定直接新增。
+const addBtn=document.getElementById("addRound");
+const newAddBtn=addBtn.cloneNode(true);addBtn.replaceWith(newAddBtn);
+newAddBtn.addEventListener("click",()=>addRound());
+document.getElementById("imageInput").addEventListener("change",e=>readScreenshot(e.target.files[0]));
+document.getElementById("autoOcrBtn").addEventListener("click",runOcr);
+document.getElementById("resetScanBtn").addEventListener("click",resetShot);
+document.getElementById("useDetected").addEventListener("click",applyDetected);
+document.getElementById("clearForm").addEventListener("click",()=>{pendingScreenshotDigest=null;});
+// 把上傳截圖區放在人工選牌區前面，iPhone 操作更直覺。
+document.getElementById("entry").prepend(document.getElementById("shotCard"));
+
+load();initSelects();document.getElementById("deckSelect").value=String(decks);render();
+// B3: 修補人物牌複雜圖案造成的局部裁切；原本完整裁切保持不動。
+function locateCards(canvas,panel,side){
+  const raw=locateCardsB2(canvas,panel,side);
+  if(raw.length<2 || raw.length>3)return raw;
+  const refW=Math.round(panel.w*.19);
+  const step=Math.round(panel.w*.195);
+  const last=raw[raw.length-1];
+  const first=raw[0];
+  return raw.map((slot,i)=>{
+    if(slot.sideways || slot.rect.w>=refW*.88)return slot;
+    const anchor=side==='P'?last:first;
+    const guessedX=side==='P'?anchor.rect.x - (raw.length-1-i)*step:anchor.rect.x+i*step;
+    const y=anchor.rect.y;
+    const rect={x:Math.max(0,guessedX),y:Math.max(0,y),w:refW,h:Math.round(refW*1.34)};
+    if(rect.x+rect.w>canvas.width || rect.y+rect.h>canvas.height)return slot;
+    return {...slot,rect,sideways:false};
+  });
+}
+
+// 已核對的訓練例子來自三張使用者提供的圖，非通用 52 牌模型。
+const CARD_REFERENCE_MASKS_B3 = [{"card":"K♦","mask":"AgAAAAAAAAAAwhUAAAAAAAAAQgUAAAAAAAAAQgUAAAAAAAAAQgUAAAAAAAAAQgUAAAAAAAAAwjWqqqqqqgIAQhVQ4HdVAAIAAgBQwf8/QAMAAgX0w/8/2AMAQg/0AcA/1QMAAgdQAAAA3AMAAgAAAAAA0AMAAgAAAAAAwAMAAgAAABAA0AMAAgAACHwV+gMAAgCgKlVf7wMAAgDqq9XfrwMAAoBPr/3XvwIAAkDXr//3/wIAAoDXo76j/wMAAgD1IKoK/wMAAoD/or4qfwIAAoD/q7oqXwMAAoD3T//q1wMAAoD+X3fq9QIAAoD611eoqwIAAkDr91egCgIAAkC/RHUAAAIAAkAHAAAAAAAAAkAHAAAAAAAAAkAHAAAAAAAAAkDXAAAAHdABAkDX8ANAXdADAkBX+P9Pf0ABAkAD/P8PHQAAAgAAAP0LBBABAgCCqqqqgHIFAgAAAAAAAFAFAgAAAAAAAFAHAgAAAAAAAEAFAgAAAAAAAFAFAgAAAAAAAHAFAgAAAAAAAAAAAgAAAAAAAACAqqoqqqqqqqqqqqoqqqqqqqqqKqoqqqqqqqqq"},{"card":"7♣","mask":"AgAAAAAAAACAgioAAAAAAACAAggAAAAAAACAAgoAAAAAAACAAgIAAAAAAACAAgIAAAAAAACAAgKAAgCAAgCAAgCgAgCACgCAAgCgCgCgCgCAAgqqKgCoKgCAgiqqKgCoqgCAgiqoKgCoKgCAAgCAAiiAAgCAAgAAAKoAAACAAgAAAKoAAACAAgAAgKoCAACAAgAAgKoKAACAAgAAgKoCAACAAgCAAiiAAgCAAgCgAgCACgCAAgCgCgCgCgCAAgCqKgCoqgCAAgCqKgCoqgCAAgCoKgCoKgCAAgCAAgCAAgCAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgAAAAAAAACAAgCAAgCAAgCAAgCgAgCACqCCAgCgCgCgCqiCAgCqKgCoqqCAAgCqKgCoqqCAAgCoKgCoKgCAAgCAAgCAAoCAAgAAAAAAAICAAgAAAAAAAICAAgAAAAAAAKCAAgAAAAAAACCAAgAAAAAAACiCAgAAAAAAAKiCAgAAAAAAAACAqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"},{"card":"8♥","mask":"QQUAAAAAAABAUQUAAAAAAABA0QUAAAAAAABAwQ0AAAAAAABAUQQAAAAAAABAwQUAAAAAAABAQQdVHQB0VQBAAQBdPQBUdQBAwQ1dHQB0dQBA0R9UFQBUFQBAQQfUR1XRFwBAAQHQ0ddHBwBAAAAA0FUHAABAAQAAQFcBAABAAQAAAFUAAABAAQAAAH0AAABAAQAAABQAAABAAQAAAAAAAABAAQBVFQBUVQBAAQBdNQB8dQBAAQBdFQBUdQBAAQB0HQB0FQBAAQDUBwDQFQBAAQDQAQBABwBAAAAAAAAAAQBAAAAAAAAAAABAAAAAQNcBAABAAAAA0FUHAABAAAAA0FUBAABAAAAAQNcBAABAAABUFX1UFABAAABdHRR0fVBBAABdFQBUdfRBAABVFQB0FXRHAABUBwDQFVBBAADQAQBABwBAAABAAAAAAVABAAAAAAAAAFQBAAAAAAAAAFQBAAAAAAAAAHRBAAAAAAAAAFRBAAAAAAAAAHADAAAAAAAAAFBAAwAAAAAAAADA////////////qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"},{"card":"K♦","mask":"R3UAAAAAAAAARxUAAAAAAAAARwUAAAAAAAAARwcAAAAAAAAARxUAAAAAAAAAR3WqqqqqqgIAR9VCICdQAAAABwDQwf9/QAcAAwV0x/+/QAcABx10B8A/XAcAAx3QAQAEXAcAAwRCAAAAQAcABwACAAAAQAcAAwAAAAAAQAcAAwACAHABeAcAAwCCqlx97QcAAwCiq1RfvwoAAwA+r37f/woAAwBfL/7XfwoAAwDXK66u/wsAAwDWo+oq/gsAAwD3I/oofAMAAwD/K/sqXgMAAwD/f/+JXwMAAwD6X/fJxwsAAwD6X1epvwIAAwDr11ehKgAAAwC/d9WAAAAAAwAfABAAAAAAAwAfAAAAAAAAAwAfAAAAAAAAAwDfAAAAFEABAwDf8gcAXcAHAwDf8P8F30ADAwAP8P8PVQAAAwADUPUvFAAAAwACiqCrAFIdAwAAAAAAAFAVAwAAAAAAAEAFAwAAAAAAAEAHAwAAAAAAAEAFAwAAAAAAAFAdAgAAAAAAAFAEBgAAAAAAAAAA/v8AgC+g////qqoLwqqsqqqqqqoKyqqsqqqqqqrOxj/wq6qq"}];
+const B3_TEMPLATES_KEY='baccarat_b4_local_confirmed_templates';
+function getLearnedMasks(){
+ try{
+  const a=JSON.parse(localStorage.getItem(B3_TEMPLATES_KEY)||'[]');
+  return Array.isArray(a)?a.filter(x=>x&&ranks.includes(rankOf(x.card))&&suits.includes(suitOf(x.card))&&typeof x.mask==='string'&&x.mask.length===576).slice(-150):[];
+ }catch(e){return []}
+}
+function decodeRef(x){return {card:x.card,mask:Uint8Array.from(atob(x.mask),c=>c.charCodeAt(0))};}
+function b3References(){return [...DECODED_REFS,...CARD_REFERENCE_MASKS_B3.map(decodeRef),...getLearnedMasks().map(decodeRef)];}
+function cardMaskDistance(a,b,x0=0,x1=36,y0=0,y1=48){
+ let err=0,n=0;
+ for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){
+  const p=y*36+x,sh=(p&3)*2;
+  const v=(a[p>>2]>>sh)&3,w=(b[p>>2]>>sh)&3;
+  if(v!==w)err++;n++;
+ }
+ return err/n;
+}
+function bestDistinct(all,getKey){
+ all.sort((a,b)=>a.score-b.score);
+ if(!all.length)return null;
+ return {best:all[0],second:all.find(z=>getKey(z)!==getKey(all[0]))};
+}
+function patternSuggestion(slot){
+ const mask=binaryCardMask(scan.canvas,slot.rect);
+ const refs=b3References();
+ const whole=bestDistinct(refs.map(r=>({card:r.card,score:cardMaskDistance(mask,r.mask)})),v=>v.card);
+ if(whole){
+  const {best,second}=whole;
+  if(best.score<.125 && (!second||second.score-best.score>.035)){
+    return {card:best.card,note:`B3 完整牌面樣本候選：${best.card}（圖像差異 ${(best.score*100).toFixed(1)}%）；必須親自核對並勾選。`};
+  }
+ }
+ // 牌號和花色分開比對。僅高一致性、且候選差距明顯才預先選取。
+ const rank=bestDistinct(refs.map(r=>({card:r.card,rank:rankOf(r.card),score:cardMaskDistance(mask,r.mask,0,12,0,12)})),v=>v.rank);
+ const suit=bestDistinct(refs.map(r=>({card:r.card,suit:suitOf(r.card),score:cardMaskDistance(mask,r.mask,0,12,12,22)})),v=>v.suit);
+ if(rank&&suit){
+  const ra=rank.best,sa=suit.best;
+  const rm=rank.second?rank.second.score-ra.score:1;
+  const sm=suit.second?suit.second.score-sa.score:1;
+  if(ra.score<.085 && sa.score<.085 && rm>.06 && sm>.06){
+   const candidate=ra.rank+sa.suit;
+   return {card:candidate,note:`B3 角落獨立候選：牌號 ${ra.rank}、花色 ${sa.suit}；仍必須逐張核對，可能誤判。`};
+  }
+ }
+ // 門檻不符時避免拿錯誤答案填入選單。
+ return {card:'',note:'B3 沒有足夠把握自動填入；請看放大牌面並手動選擇。'};
+}
+function learnVerifiedCards(){
+ // 只記錄已由使用者逐張確認的牌面特徵；不保存原始直播截圖。
+ let learned=getLearnedMasks();
+ for(const s of scan.slots){
+  if(!s.card||!s.confirmed)continue;
+  const bytes=binaryCardMask(scan.canvas,s.rect);
+  const encoded=btoa(String.fromCharCode(...bytes));
+  if(learned.some(x=>x.card===s.card&&x.mask===encoded))continue;
+  learned.push({card:s.card,mask:encoded});
+ }
+ learned=learned.slice(-120);
+ try{localStorage.setItem(B3_TEMPLATES_KEY,JSON.stringify(learned));}catch(e){console.warn('儲存樣本失敗',e);}
+ updateLearnedCount();
+}
+function updateLearnedCount(){
+ const el=document.getElementById('learnedCount');
+ if(el)el.textContent=`已累積 ${getLearnedMasks().length} 張人工核對樣本（本機儲存）`;
+}
+document.getElementById('clearLearned').addEventListener('click',()=>{
+ if(confirm('要清除 B3 自己累積的人工確認圖樣嗎？示範圖樣仍然保留，牌局紀錄不會刪除。')){
+  localStorage.removeItem(B3_TEMPLATES_KEY);
+  updateLearnedCount();
+ }
+});
+updateLearnedCount();
+
+</script>
+
+<script>
+// B7 Dream Gaming — B6 recognition plus compact, user-verified fast workflow.
+// verified local examples and explicit hand confirmation.
+(()=>{
+  'use strict';
+  const samples = [{"card":"A♠","rank":"AAAAAAAAAAAAAAADAAAcAABwAADgAQCADwAAPgAA2AAAcAMAwA0AAHcAAMwBADgGAOAYAIDjAACOAwA4DgDwPwDA/wAA/wcADBwAOHAA4MABwIcfAB9+AAAAAAAAAAAAAAA=","suit":"AAAAAAAAMAAAHACADwDwAwD+AYD/APA/APwfAP8HwP8A4DsAwAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6549.jpeg","slot":"P1"},{"card":"6♣","rank":"AAAAAAAAAAAAAIAPAIB/AIDPAwAOHAAcIAAwAADgAACA8wMA/h8A+P8A4IMHgAccAA5gADiAA2AADoABOAAG4AA4gAPgAA4ABxwAPHgA4P8AAP8BAPABAAAAAAAAAAAAAAA=","suit":"AAAAYAAAfACAHwDgDyD4AQh+AOP/wPx/sP8f7P8H8vcBuDkAYAAAOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6549.jpeg","slot":"P2"},{"card":"3♣","rank":"AAAAAAAAAAAAAP4/APj/AOD/A4CDBwAODgAQHAAAeAAA8AAA4A8AwP8AAMcHAAAcAABgAACAAwAADgAAOAAA4AAAgAPgAA6AAxwAPHwA8P8AAP8AAPgBAAAAAAAAAAAAAAA=","suit":"AAAAYAAAfACAHwDgDwD4AQB8AOD/APx/gP8f4P8H8P0BuDkAYAAAOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6549.jpeg","slot":"B1"},{"card":"3♦","rank":"AAAAAAAAAAAAAPw/APj/AOD/A4D/DwAOHwAwPgAAeAAA8AEA4B8AwP8AAO8HAAA+AADwAACAAwAADgAAOAAA4AAQgAPgAA+ABz4AfnwA8P8AgP8BAPgDAAAAAAAAAAAAAAA=","suit":"AAAAAAAAOAAADgDABwD4AwD/AeD/APg/APwHAP4AgB8AwAMA4AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6549.jpeg","slot":"B2"},{"card":"J♠","rank":"AAAAAAAAAAAAAAD+AQD4BwDgHwAAHgAAeAAA4AEAgAcAAB4AAHgAAOABAIAHAAAeAAB4AADgAQCABwAAHgAMeAAw4AHAgQMABw4CPDwI4H8AgP8AAPgAAAAAAAAAAAAAAAA=","suit":"AAAAAAAAMAAAHACADwDwAwD8AYD/APA/APwfAP8HwP8A4DsAwAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC","source":"IMG_6550.jpeg","slot":"P1"},{"card":"5♣","rank":"AAAAAAAAAAAAAPgfAOD/AMD/AQAHAAAcAABwAADA/wAA/wcAfD4AcOABAAAHAAA4AADgAAAAAwAADAAAMAAA4AAAgANgAAeAAxwAHnwA8P8AgP8BAPgAAAAAAAAAAAAAAAA=","suit":"AAAAYAAAfACAHwDgDwD4AQh+AOP/wPx/sP8f7P8H8veBuDkAYAAAOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6550.jpeg","slot":"P2"},{"card":"A♣","rank":"AAAAAAAAAAAAAIADAAAOAAA4AADwAQDABwAAHwAAbAAAsAEA4A4AgDsAAM4AABgDAHAcAMBxAADHAQAcBwDwHwDg/wCA/wMADg4AGDAAcMAB4McPgA8/AAAAAAAAAAAAAAA=","suit":"AAAAYAAAfACAHwDgDwD4AQB+AOD/APx/gP8f4P8H8P0BuDkAYAAAOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6550.jpeg","slot":"B1"},{"card":"J♥","rank":"AAAAAAAAAAAAAAD/AAD8AwDwDwAADwAAPAAA8AAAwAMAAA8AADwAAPAAAMADAAAPAAA8AADwAADAAwAADwAPPAA88ADwwAPABw8BPh8E+H8AwP8AAP4AIAAAwAAAAAMAAAw=","suit":"AAAAGAMA/wHg/wD4PwD+D4D/A+D/APAfAPwDAP4AAB8AwAMA4AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6550.jpeg","slot":"B2"},{"card":"J♥","rank":"AAAAAAAAAAAAAAB+AAD8AwDwDwCAHwAAPAAA8AAAwAMAAA8AADwAAPAAAMADAAAPAAA8AADwAADAAwAADwAGPAA88ADwwAPAgw8AHx4E+H8AwP8AAP4BAPABwAAAAAMAAAw=","suit":"AAAAAAAA7wHgfwD4PwD+D4D/A+B/APgfAPwDAP4AgB8AwAMA8AAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6550.jpeg","slot":"P3"},{"card":"K♣","rank":"AAAAAAAAAAAAAH58APj5A+DnDwAPDwAYHABgeACA4QAAxgEAmAcAYA4AgD8AAP4AAPgDAOAdAIBzAACOAwAYDgBgcACAwQEABgYAGDgA+PAB4OcPgJ8/AAAAAAAAAAAAAAA=","suit":"AAAAYAAAfACAHwDgDwD4AQB+AOD/APx/gP8f4P8H8P8BuDkAYAAAOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6550.jpeg","slot":"B3"},{"card":"9♥","rank":"AAAAAAAAAAAAAMAPAMD/AID/BwA/PwA88ABwgAPAARyAA3AADsABOAAHwAEcAAd4ADzwAfDzB4D/HwD8fwCA4wEAgAMAAA4ABjwAeHgA4P8AAP8BAPgDIAAAgAAAAAIAAAw=","suit":"AAAAMAcA/wPA/wDwfwD8HwD/B8D/AOA/APgHAPwBAD8AgAcAwAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6563.jpeg","slot":"P1"},{"card":"2♥","rank":"AAAAAAAAAAAAAOAPAOB/AMD/A4D/HwAeeAA4wAPwAA6AAzgAAPAAAOABAMAHAIAPAIAfAAAfAAA+AAB8AAD4AADwAQDgAQaABzgADuAA+P8D4P8PgP8/AAAAAAAAAAAAAAA=","suit":"AAAAGAMA/wHg/wD4PwD+D4D/A+B/APAfAPwDAP4AgB8AwAMA4AAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6563.jpeg","slot":"P2"},{"card":"8♥","rank":"AAAAAAAAAAAAAOAHAMB/AID/AwAPDwAceAA4wAHgAAeAAxwAHHgA8PEBgP8DAP4PAPx/APjgAeAAD8ADOAAP4AA8gAPwAA6ABzwAPngA8P8BgP8DCPwDMAAAwAAAAAMAAAw=","suit":"AAAAGAMA/wHg/wD4PwD+D4D/A+B/APAfAPwDAP4AAB8AwAMA4AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6563.jpeg","slot":"B1"},{"card":"3♠","rank":"AAAAAAAAAAAAAPw/APj/AOD/A4ADBwAOHgAwPAAAeAAA8AEA4B8AgP8AAIYHAAAcAADgAACAAwAADAAAMAAAwAAAgAPgAA6AAzwAPHgA4P8AAP8BAPABAAAAAAAAAAAAAAA=","suit":"AAAAAAAAEAAADgDABwDwAQD+AMB/APA/AP4PgP8D4P8AcB0A4AAAOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6563.jpeg","slot":"B2"},{"card":"8♠","rank":"AAAAAAAAAAAAAAAAAIAfAID/AQAPDwAcOAAwwAHgAAeAAxwADHAAcOAAgP8DAP4HAPw/AHDgAeAAB4ADOAAGwAAYAANgAA6AAxgAHnAA8PEBgP8DAPgDAAAAAAAAAAAAAAA=","suit":"AAAAAAAAEAAADgDAAwDwAQD+AMB/APgfAP4PgP8D4P8A+B8AaAIAOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6563.jpeg","slot":"P3"},{"card":"9♠","rank":"AAAAAAAAAAAAAIAAAMA/AID/AQAPDwAecAA4wAFgAA6AATgABuAAGIADYAAOgAM4AA7wAPDgA4D/DwD8PwDA4wAAwAEAAAcAAw4AHDwA8H8AgP8AAPgAAAAAAAAAAAAAAAA=","suit":"AAAAAAAAGAAADgDABwD4AQD+AMB/APgfAP4PgP8D4H8A8B0AYAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","source":"IMG_6563.jpeg","slot":"B3"}];
+  const boxes = [
+    {side:'P',order:1,x:31,y:766,w:116,h:161,sideways:false},
+    {side:'P',order:2,x:188,y:766,w:116,h:161,sideways:false},
+    {side:'B',order:1,x:403,y:766,w:116,h:161,sideways:false},
+    {side:'B',order:2,x:559,y:766,w:116,h:161,sideways:false},
+    {side:'P',order:3,x:88,y:937,w:161,h:116,sideways:true},
+    {side:'B',order:3,x:458,y:937,w:162,h:116,sideways:true}
+  ];
+  const ROIS=[[3,5,29,35,26,30],[5,35,27,62,22,27]];
+  const imInput=document.getElementById('dgImageInput'),status=document.getElementById('dgStatus');
+  const preview=document.getElementById('dgPreview'),previewWrap=document.getElementById('dgPreviewWrap'),container=document.getElementById('dgCards');
+  const btnUse=document.getElementById('dgUse'),btnOcr=document.getElementById('dgOcr');
+  const sampleInfo=document.getElementById('dgSampleInfo');
+  const KEY='dg_b71_verified_corners', B7_KEY='dg_b7_verified_corners', B6_KEY='dg_b6_verified_corners';
+  let source=null,slots=[],shift=0,busy=false,hash=null,loadSerial=0;
+  function decode(base,n){const raw=atob(base),out=new Uint8Array(n);for(let i=0;i<n;i++)out[i]=(raw.charCodeAt(i>>3)>>(i&7))&1;return out;}
+  function encode(bits){const b=new Uint8Array(Math.ceil(bits.length/8));bits.forEach((v,i)=>b[i>>3]|=v<<(i&7));return btoa(String.fromCharCode(...b));}
+  const builtin=samples.map(s=>({card:s.card,rankBits:decode(s.rank,780),suitBits:decode(s.suit,594)}));
+  function readLearned(key){try{const a=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(a)?a.filter(s=>s&&ranks.includes(s.rankName)&&suits.includes(s.suitName)&&typeof s.r==='string'&&typeof s.s==='string').slice(-150):[];}catch(e){return [];}}
+  function learned(){return readLearned(KEY);}
+  function b7Learned(){return readLearned(B7_KEY);}
+  function b6Learned(){return readLearned(B6_KEY);}
+  function allRefs(){return builtin.concat([...b6Learned(),...b7Learned(),...learned()].map(s=>({card:s.rankName+s.suitName,rankBits:decode(s.r,780),suitBits:decode(s.s,594)})));}
+  function updateSampleInfo(){sampleInfo.textContent=`內建 ${samples.length} 張示範樣本，唯讀參考 B6 核對樣本 ${b6Learned().length} 張與 B7 核對樣本 ${b7Learned().length} 張；B7.1 新增 ${learned().length} 張。舊版本資料不受影響。此非完整 52 牌模型。`;}
+
+  function validRect(b){return source&&b.x>=0&&b.y>=0&&b.w>=30&&b.h>=30&&b.x+b.w<=source.width&&b.y+b.h<=source.height;}
+  function boxWithScale(b,sy){const k=source.width/706;return {...b,x:Math.round(b.x*k),y:Math.round((b.y+sy)*k),w:Math.round(b.w*k),h:Math.round(b.h*k)};}
+  function whiteness(b){if(!validRect(b))return 0;const data=source.getContext('2d',{willReadFrequently:true}).getImageData(b.x,b.y,b.w,b.h).data;let good=0,n=0;
+    for(let y=7;y<b.h-7;y+=4)for(let x=8;x<b.w-8;x+=4){const i=4*(y*b.w+x);n++;if(data[i]>195&&data[i+1]>195&&data[i+2]>190)good++;}return good/Math.max(1,n);}
+  function snapTop(b){
+    // Detect the white upper edge rather than assuming a perfectly fixed screenshot offset.
+    // Only adjust small offsets; manual up/down calibration remains available.
+    if(shift||!source)return b;
+    const ctx=source.getContext('2d',{willReadFrequently:true}),scale=source.width/706;
+    const rgb=ctx.getImageData(0,0,source.width,source.height).data;
+    function white(y){if(y<1||y>=source.height)return 0;let n=0;
+      for(const f of [.30,.39,.49,.59,.69]){const x=Math.min(source.width-1,Math.max(0,Math.round(b.x+b.w*f))),i=4*(y*source.width+x);
+        if(rgb[i]>216&&rgb[i+1]>216&&rgb[i+2]>211)n++;}return n;
+    }
+    const max=Math.round(19*scale),from=Math.max(5,b.y-max),to=Math.min(source.height-5,b.y+max);
+    let best=null;
+    for(let y=from;y<=to;y++){
+      if(white(y)>=4 && white(y+3)>=4 && white(y-3)<=1){
+        const score=Math.abs((y-1)-b.y);if(!best||score<best.score)best={y:y-1,score};
+      }
+    }
+    return best?{...b,y:best.y}:b;
+  }
+  function normalizedCrop(b){const c=document.createElement('canvas');c.width=116;c.height=160;const ctx=c.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.fillRect(0,0,116,160);
+    if(b.sideways){ctx.translate(0,160);ctx.rotate(-Math.PI/2);ctx.drawImage(source,b.x,b.y,b.w,b.h,0,0,160,116);}
+    else ctx.drawImage(source,b.x,b.y,b.w,b.h,0,0,116,160);return c;}
+  function mask(c,roi){const [x,y,xx,yy,w,h]=roi;const t=document.createElement('canvas');t.width=w;t.height=h;const ctx=t.getContext('2d',{willReadFrequently:true});ctx.drawImage(c,x,y,xx-x,yy-y,0,0,w,h);
+    const d=ctx.getImageData(0,0,w,h).data,a=new Uint8Array(w*h);
+    for(let i=0;i<a.length;i++){const j=i*4,r=d[j],g=d[j+1],b=d[j+2];a[i]=(Math.max(r,g,b)<150||(r>80&&r>g*1.25&&r>b*1.22))?1:0;}return a;}
+  function distance(a,b){let d=0;for(let i=0;i<a.length;i++)if(a[i]!==b[i])d++;return d/a.length;}
+  function guess(c){const bitsR=mask(c,ROIS[0]),bitsS=mask(c,ROIS[1]),refs=allRefs();
+    function choose(which,bits){const groups=new Map();for(const ref of refs){const key=which==='rank'?rankOf(ref.card):suitOf(ref.card),value=distance(bits,which==='rank'?ref.rankBits:ref.suitBits);groups.set(key,Math.min(groups.get(key)??1,value));}
+      const sorted=[...groups].sort((a,b)=>a[1]-b[1]),first=sorted[0]||['',1],second=sorted[1]||['',1];return {label:first[0],score:first[1],margin:second[1]-first[1],alternates:sorted.slice(0,3)};}
+    const r=choose('rank',bitsR),s=choose('suit',bitsS);
+    // Only preselect when two independent corner glyphs are close to samples.
+    // A fallback guess is never used as a confirmed card.
+    const trust=r.score<=.14&&s.score<=.14&&r.margin>=.025&&s.margin>=.018;
+    return {card:trust?r.label+s.label:'',r,s,bitsR,bitsS,trust};}
+  function readPositions(){const core=boxes.slice(0,4);let anchor=shift;
+    if(!shift&&core.some(b=>whiteness(boxWithScale(b,0))<.40)){
+      let best={v:-Infinity,d:0};for(let d=-115;d<=115;d+=4){const v=core.reduce((sum,b)=>sum+whiteness(boxWithScale(b,d)),0)-Math.abs(d)*.006;
+        if(v>best.v)best={v,d};}anchor=best.d;
+    }
+    const rects=boxes.map(b=>{const r=snapTop(boxWithScale(b,anchor));return {...r,white:whiteness(r)};});
+    const top=rects.slice(0,4),third=rects.slice(4).filter(r=>r.white>.44);
+    if(top.some(b=>b.white<.46))return {cards:[],anchor,note:'沒有同時找到四張直立牌。請上傳已結算、牌面放大的完整截圖，或改手動輸入。'};
+    return {cards:top.concat(third),anchor,note:`找到四張直立牌與 ${third.length} 張橫向牌；辨識候選請逐張核對。`};}
+  function drawPreview(){preview.width=source.width;preview.height=source.height;const ctx=preview.getContext('2d');ctx.drawImage(source,0,0);
+    for(const s of slots){ctx.strokeStyle=s.side==='P'?'#73b8ff':'#ff9ca4';ctx.lineWidth=Math.max(2,source.width/220);ctx.strokeRect(s.x,s.y,s.w,s.h);}previewWrap.classList.remove('hidden');}
+  function rerender(){container.replaceChildren();for(const s of slots){
+      const card=document.createElement('div');card.className='detect-card';const heading=document.createElement('div');heading.className='slot-label '+(s.side==='P'?'shot-blue':'shot-red');heading.textContent=(s.side==='P'?'閒家':'莊家')+'第 '+s.order+' 張'+(s.sideways?'（橫向）':'');
+      const holder=document.createElement('div');holder.className='crop';holder.style.height='130px';const crop=normalizedCrop(s);crop.style.maxHeight='124px';crop.style.maxWidth='100%';holder.append(crop);
+      const select=document.createElement('select');select.setAttribute('aria-label',heading.textContent+'牌面');select.innerHTML=cardOptions;select.value=s.card||'';
+      select.addEventListener('change',()=>{s.card=select.value;s.confirmed=false;s.note='已手動修正，請重新核對數字和花色。';rerender();});
+      const note=document.createElement('p');note.className='scan-note'+(s.card?'':' warn');note.textContent=s.note||'請選擇牌面';
+      const label=document.createElement('label');label.className='slot-confirm';const cb=document.createElement('input');cb.type='checkbox';cb.disabled=!s.card;cb.checked=!!s.confirmed;
+      cb.addEventListener('change',()=>{s.confirmed=cb.checked;updateCount();});label.append(cb,document.createTextNode(' 我已核對數字與花色'));
+      card.append(heading,holder,select,note,label);container.append(card);
+    }updateCount();renderQuick();}
+  const fastPanel=document.getElementById('b7QuickPanel'),fastCards=document.getElementById('b7FastCards');
+  const fastUse=document.getElementById('b7FastUse'),fastLearn=document.getElementById('b7FastLearn');
+  const fastStatus=document.getElementById('b7FastStatus'),dreamPanel=document.getElementById('dreamPanel');
+  const detailToggle=document.getElementById('b7DetailToggle');
+  dreamPanel.classList.add('b7-compact-mode');
+  detailToggle.addEventListener('click',()=>{
+    const compact=dreamPanel.classList.toggle('b7-compact-mode');
+    detailToggle.textContent=compact?'展開原圖／逐張確認':'收合原圖，返回快速核對';
+  });
+  function updateCount(){const n=slots.filter(s=>s.card&&s.confirmed).length;
+    document.getElementById('dgCount').textContent=slots.length?`已核對 ${n}/${slots.length} 張，全部確認後才可帶入表單。`:'';
+    btnUse.disabled=!slots.length||n!==slots.length;
+    const ready=slots.length>=4&&slots.length<=6&&slots.every(s=>!!s.card);
+    fastUse.disabled=!ready;fastLearn.disabled=!ready;
+    fastStatus.textContent=!slots.length?'':ready?`已辨識並選好 ${slots.length} 張。核對每張牌後，選擇「帶入表單」或「只儲存辨識樣本」。`:`${slots.filter(s=>s.card).length}/${slots.length} 張已選牌。請先修正「無」，再核對所有牌。`;
+  }
+  function renderQuick(){fastCards.replaceChildren();fastPanel.classList.toggle('hidden',!slots.length);
+    if(!slots.length)return;
+    for(const slot of slots){
+      const el=document.createElement('div');el.className='b7-fast-card'+(!slot.card?' warn':'');
+      const img=normalizedCrop(slot);img.setAttribute('aria-label','牌面放大圖');
+      const info=document.createElement('div');info.className='b7-fast-info';
+      const heading=document.createElement('div');heading.className='b7-fast-label '+(slot.side==='P'?'shot-blue':'shot-red');
+      heading.textContent=(slot.side==='P'?'閒':'莊')+'家第'+slot.order+'張'+(slot.sideways?' ↻':'');
+      const select=document.createElement('select');select.setAttribute('aria-label',heading.textContent+'牌面');select.innerHTML=cardOptions;select.value=slot.card||'';
+      select.addEventListener('change',()=>{slot.card=select.value;slot.confirmed=false;slot.note='已人工修正，請重新核對。';rerender();});
+      const note=document.createElement('div');note.className='b7-fast-hint';note.textContent=slot.card?'待人工核對':'尚未確認牌面';
+      info.append(heading,select,note);el.append(img,info);fastCards.append(el);
+    }
+    updateCount();
+  }
+  function verifyFast(){
+    if(!slots.length||slots.some(s=>!s.card)){alert('請先把所有牌的數字與花色選完整。');return false;}
+    const p=slots.filter(s=>s.side==='P').sort((a,b)=>a.order-b.order).map(s=>s.card);
+    const b=slots.filter(s=>s.side==='B').sort((a,b)=>a.order-b.order).map(s=>s.card);
+    const rule=validateDrawingRules(p,b);
+    if(rule){alert('牌面或補牌規則異常：'+rule+'。請展開原圖核對。');return false;}
+    if(!confirm(`請確認已親眼核對全部 ${slots.length} 張牌（數字與花色皆正確），且截圖已完成發牌。\n閒：${p.join(' ')}\n莊：${b.join(' ')}\n正確才按「確定」。`))return false;
+    slots.forEach(s=>s.confirmed=true);updateCount();return true;
+  }
+  fastUse.addEventListener('click',()=>{if(verifyFast())btnUse.click();});
+  fastLearn.addEventListener('click',()=>{if(!verifyFast())return;
+    addLearning();status.textContent='已儲存人工核對樣本到 B7，本次沒有帶入表單或加入牌局。';
+    fastStatus.textContent=`已學習 ${slots.length} 張牌面。此次沒有扣除牌靴，也沒有新增牌局。`;
+  });
+  function detect(){if(!source)return;const found=readPositions();slots=[];
+    for(const box of found.cards){const r=guess(normalizedCrop(box));slots.push({...box,card:r.card,confirmed:false,note:r.card?
+      `B7 候選 ${r.card}（牌號圖樣差異 ${(r.r.score*100).toFixed(1)}%，花色 ${(r.s.score*100).toFixed(1)}%）。請親自核對。`:
+      `未能確認：牌號候選 ${r.r.label||'無'}、花色候選 ${r.s.label||'無'}；請人工選牌。`});}
+    status.textContent=found.note+(slots.length?` 自動預選 ${slots.filter(s=>s.card).length}/${slots.length} 張。`:'');
+    document.getElementById('dgShiftText').textContent='校正：'+(found.anchor||0)+' px';btnOcr.disabled=!slots.length||busy;
+    if(slots.length){drawPreview();rerender();}else{container.replaceChildren();previewWrap.classList.add('hidden');btnUse.disabled=true;document.getElementById('dgCount').textContent='';}
+  }
+  function reset(clearInput=true){slots=[];source=null;hash=null;previewWrap.classList.add('hidden');container.replaceChildren();fastCards.replaceChildren();fastPanel.classList.add('hidden');btnUse.disabled=true;btnOcr.disabled=true;fastUse.disabled=true;fastLearn.disabled=true;
+    document.getElementById('dgCount').textContent='';if(clearInput)imInput.value='';status.textContent='尚未選擇截圖。';}
+  async function perform(file){if(!file)return;const serial=++loadSerial;reset(false);status.textContent='正在載入並定位 Dream Gaming 牌面……';
+    if(!file.type.startsWith('image/')){status.textContent='請選擇 PNG 或 JPEG 圖片。';return;}
+    const url=URL.createObjectURL(file);try{const im=new Image();await new Promise((res,rej)=>{im.onload=res;im.onerror=rej;im.src=url;});if(serial!==loadSerial)return;
+      const ratio=Math.min(1,880/im.naturalWidth),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*ratio);c.height=Math.round(im.naturalHeight*ratio);
+      c.getContext('2d',{willReadFrequently:true}).drawImage(im,0,0,c.width,c.height);source=c;
+      if(crypto&&crypto.subtle){const bytes=await file.arrayBuffer(),digest=await crypto.subtle.digest('SHA-256',bytes);hash=Array.from(new Uint8Array(digest),n=>n.toString(16).padStart(2,'0')).join('');}
+      if(serial===loadSerial)detect();
+    }catch(e){status.textContent='圖片讀取或定位失敗：'+String(e.message||e);}finally{URL.revokeObjectURL(url);}}
+  function addLearning(){let existing=learned();for(const s of slots){if(!s.confirmed||!s.card)continue;const c=normalizedCrop(s),entry={rankName:rankOf(s.card),suitName:suitOf(s.card),r:encode(mask(c,ROIS[0])),s:encode(mask(c,ROIS[1]))};
+      if(!existing.some(x=>x.rankName===entry.rankName&&x.suitName===entry.suitName&&x.r===entry.r&&x.s===entry.s))existing.push(entry);}
+    try{localStorage.setItem(KEY,JSON.stringify(existing.slice(-150)));}catch(e){console.warn('樣本無法儲存',e);}updateSampleInfo();}
+  imInput.addEventListener('change',e=>{shift=0;perform(e.target.files[0]);});
+  document.getElementById('dgReset').addEventListener('click',()=>{loadSerial++;shift=0;reset();});
+  for(const [id,delta] of [['dgMinus',-8],['dgPlus',8]])document.getElementById(id).addEventListener('click',()=>{if(!source)return;shift+=delta;detect();});
+  document.getElementById('dgClearSamples').addEventListener('click',()=>{if(confirm('只清除 B7 新增的核對樣本？B6 的樣本、B5/B6/B7 牌局紀錄均保留。')){localStorage.removeItem(KEY);updateSampleInfo();if(source)detect();}});
+  btnUse.addEventListener('click',()=>{
+    if(!slots.length||slots.some(s=>!s.card||!s.confirmed))return alert('請逐張核對所有牌。');
+    const p=slots.filter(s=>s.side==='P').sort((a,b)=>a.order-b.order).map(s=>s.card),b=slots.filter(s=>s.side==='B').sort((a,b)=>a.order-b.order).map(s=>s.card);
+    const rule=validateDrawingRules(p,b);if(rule)return alert('牌面或補牌規則異常：'+rule);
+    if(hash&&rounds.some(r=>r.screenshotDigest===hash))return alert('這張截圖已加入本牌靴，不能重複扣牌。');
+    addLearning();resetForm();p.forEach((v,i)=>document.getElementById('p'+(i+1)).value=v);b.forEach((v,i)=>document.getElementById('b'+(i+1)).value=v);
+    pendingScreenshotDigest=hash;document.getElementById('manualEntryCard').scrollIntoView({behavior:'smooth',block:'start'});
+    status.textContent='已帶入表單；再次核對後按「加入牌局」才會扣除目前牌靴的牌。';
+  });
+  btnOcr.addEventListener('click',async()=>{
+    if(busy||!slots.length)return;busy=true;btnOcr.disabled=true;status.textContent='正在載入 OCR 元件……';let worker=null;
+    try{await loadOcrScript();worker=await window.Tesseract.createWorker('eng',1);await worker.setParameters({tessedit_char_whitelist:'A1234567890JQK',tessedit_pageseg_mode:'10'});
+      for(let i=0;i<slots.length;i++){const s=slots[i];if(s.card)continue;status.textContent=`OCR 讀取第 ${i+1}/${slots.length} 張……`;
+        const crop=normalizedCrop(s),corner=document.createElement('canvas');corner.width=160;corner.height=180;const c=corner.getContext('2d');c.fillStyle='white';c.fillRect(0,0,160,180);c.drawImage(crop,3,5,26,30,20,20,120,138);
+        try{const out=await worker.recognize(corner);let r=(out.data.text||'').toUpperCase().replace(/[^A-Z0-9]/g,'');if(r==='1'||r==='I'||r==='L')r='A';if(!ranks.includes(r))r='';
+          s.note=r?`OCR 僅猜測牌號 ${r}；請人工選擇完整牌面和花色。`:'OCR 牌號仍不確定，請人工選牌。';
+        }catch(e){s.note='OCR 無法辨識，請人工選牌。';}
+      }status.textContent='OCR 已完成。所有牌仍需逐張人工核對。';rerender();
+    }catch(e){status.textContent='OCR 載入失敗：'+String(e.message||e)+'；仍可手動選牌。';}
+    finally{if(worker)try{await worker.terminate();}catch(e){}busy=false;btnOcr.disabled=!slots.length;}
+  });
+  updateSampleInfo();
+})();
+
+</script>
+</body></html>
